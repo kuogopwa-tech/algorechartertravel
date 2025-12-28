@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Algore Charter Travels</title>
+  <link rel="icon" href="images/logo.png" type="image/x-icon">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      line-height: 1.6;
+      color: #222;
+    }
+
+    header {
+      background: #003366;
+      color: #fff;
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo-img {
+      height: 90px;
+      width: 90px;
+      border-radius: 90%;
+      object-fit: cover;
+    }
+
+    header h1 {
+      font-size: 22px;
+    }
+
+    nav a {
+      color: #fff;
+      margin-left: 20px;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .hero {
+      background: linear-gradient(rgba(0,0,0,.6), rgba(0,0,0,.6)),
+      url("https://images.unsplash.com/photo-1504196606672-aef5c9cefc92") center/cover;
+      height: 80vh;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      padding: 40px;
+    }
+
+    .hero h2 {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      background: #f4a100;
+      color: #000;
+      padding: 12px 25px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    section {
+      padding: 60px 40px;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 40px;
+      color: #003366;
+    }
+
+    .services {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      border: 1px solid #ddd;
+      padding: 20px;
+      text-align: center;
+      border-radius: 6px;
+      transition: transform 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      color: #003366;
+    }
+
+    .about {
+      max-width: 800px;
+      margin: auto;
+      text-align: center;
+    }
+
+    .countries {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .country {
+      border: 1px solid #ccc;
+      padding: 10px 20px;
+      border-radius: 20px;
+      background: #f9f9f9;
+    }
+
+    footer {
+      background: #003366;
+      color: #fff;
+      padding: 40px;
+    }
+
+    footer h3 {
+      margin-bottom: 10px;
+    }
+
+    footer p, footer a {
+      font-size: 14px;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    form input, form textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    form button {
+      width: 100%;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        padding: 15px;
+      }
+      .logo-container {
+        margin-bottom: 10px;
+      }
+      nav {
+        margin-top: 10px;
+      }
+      nav a {
+        margin: 0 8px;
+        font-size: 13px;
+      }
+      .hero {
+        padding: 20px;
+        text-align: center;
+      }
+      .hero h2 {
+        font-size: 28px;
+      }
+      .hero p {
+        font-size: 16px;
+      }
+      section {
+        padding: 40px 20px;
+      }
+      .services {
+        grid-template-columns: 1fr;
+      }
+      .logo-img {
+        height: 45px;
+        width: 45px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="images/logo.png" alt="Algore Charter Travels Logo" class="logo-img">
+    <h1>Algore Charter Travels</h1>
+  </div>
+  <nav>
+    <a href="#" id="home">Home</a>
+    <a href="#about" id="about-link">About</a>
+    <a href="#services" id="services-link">Services</a>
+    <a href="#destinations" id="destinations-link">Destinations</a>
+    <a href="#contact" id="contact-link">Contact</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div>
+    <h2>Dreams Are Possible</h2>
+    <p>Tours • Charter Flights • Visa Assistance • Jobs Abroad</p>
+    <a class="btn" href="#contact">Contact Us</a>
+  </div>
+</section>
+
+<section id="services">
+  <h2 class="section-title">Our Services</h2>
+  <div class="services">
+    <div class="card"><h3>Charter Flights</h3><p>Reliable private and group charter flights.</p></div>
+    <div class="card"><h3>Tours & Travel</h3><p>Local and international tour packages.</p></div>
+    <div class="card"><h3>Hotel Booking</h3><p>Affordable hotel reservations worldwide.</p></div>
+    <div class="card"><h3>Visa Processing</h3><p>Tourist, work and visit visas.</p></div>
+    <div class="card"><h3>Jobs Abroad</h3><p>Recruitment and work placement.</p></div>
+    <div class="card"><h3>Car / Lorry / Bus Hire</h3><p>Transport solutions for all needs.</p></div>
+  </div>
+</section>
+
+<section id="about">
+  <h2 class="section-title">About Us</h2>
+  <div class="about">
+    <p>
+      Algore Charter Travels is a professional tours, travel and recruitment company
+      serving clients across Africa, the Middle East and Asia. We are committed to
+      reliable service, transparency and customer satisfaction.
+    </p>
+  </div>
+</section>
+
+<section id="destinations">
+  <h2 class="section-title">Destinations</h2>
+  <div class="countries">
+    <div class="country">Kenya</div>
+    <div class="country">Qatar</div>
+    <div class="country">UAE</div>
+    <div class="country">Saudi Arabia</div>
+    <div class="country">Uganda</div>
+    <div class="country">Tanzania</div>
+    <div class="country">Kuwait</div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="footer-grid">
+    <div>
+      <h3>Contact Us</h3>
+      <p>📞 +254 700 070 014</p>
+      <p>📞 +974 7470 3290</p>
+      <p>📞 +254 101 070 014</p>
+      <p>📧 algorechartertravels@gmail.com</p>
+    </div>
+
+    <div>
+      <h3>Send Message</h3>
+      <form id="contactForm">
+        <input type="text" placeholder="Your Name" required>
+        <input type="email" placeholder="Email" required>
+        <textarea placeholder="Message" rows="3" required></textarea>
+        <button type="submit" class="btn">Send Message</button>
+      </form>
+    </div>
+
+    <div>
+      <h3>Social Media</h3>
+      <p>TikTok: Algore Charter Travels</p>
+      <p>Facebook: Algore Charter Travels</p>
+      <p>Instagram</p>
+      <p>YouTube</p>
+    </div>
+
+    <div>
+      <h3>Algore Charter Travels</h3>
+      <p>Your trusted partner in travel, visas and jobs abroad.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Form submission handling
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    alert('Thank you! Your message has been sent. We will contact you soon.');
+    this.reset();
+  });
+
+  // Smooth scroll for navigation links
+  document.querySelectorAll('nav a').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      if (href.startsWith('#')) {
+        e.preventDefault();
+        const targetId = href.substring(1);
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 80,
+            behavior: 'smooth'
+          });
+        }
+      }
+    });
+  });
+
+  // Add active class to current section in navigation
+  window.addEventListener('scroll', function() {
+    let current = '';
+    const sections = document.querySelectorAll('section');
+    
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.clientHeight;
+      if (scrollY >= (sectionTop - 100)) {
+        current = section.getAttribute('id');
+      }
+    });
+
+    document.querySelectorAll('nav a').forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + current) {
+        link.classList.add('active');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
