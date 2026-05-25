@@ -1527,19 +1527,27 @@
           })
         });
 
-        if (!response.ok) {
-          throw new Error('Network/API error');
+        let data = {};
+        try {
+          data = await response.json();
+        } catch (_parseErr) {
+          data = {};
         }
 
-        const data = await response.json();
+        if (!response.ok) {
+          const serverMsg = data && data.error ? data.error : 'Network/API error';
+          throw new Error(serverMsg);
+        }
+
         const reply = (data && data.reply) ? data.reply : 'Sorry, I could not generate a response right now.';
 
         removeTypingIndicator();
         addMessage('assistant', reply);
         chatHistory.push({ role: 'assistant', content: reply });
-      } catch (_err) {
+      } catch (err) {
         removeTypingIndicator();
-        addMessage('assistant', 'Sorry, I’m temporarily unavailable due to a network issue. Please try again shortly or contact us at +254700070014.');
+        const fallback = 'Sorry, I’m temporarily unavailable due to a network issue. Please try again shortly or contact us at +254700070014.';
+        addMessage('assistant', (err && err.message) ? err.message : fallback);
       }
     };
 
