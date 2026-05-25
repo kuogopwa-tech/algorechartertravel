@@ -1,5 +1,7 @@
 const { callBlackboxAI } = require("../lib/blackbox");
 
+const mask = (value = "") => (value ? `${String(value).slice(0, 6)}***` : "missing");
+
 async function parseBody(req) {
   if (req.body && typeof req.body === "object") return req.body;
 
@@ -23,7 +25,16 @@ module.exports = async (req, res) => {
   }
 
   try {
+    console.log("[/api/chat] request", {
+      method: req.method,
+      hasApiKey: Boolean(process.env.BLACKBOX_API_KEY),
+      model: process.env.BLACKBOX_MODEL || "(default)",
+      baseUrl: process.env.BLACKBOX_BASE_URL || "https://api.blackbox.ai",
+      apiKeyPreview: mask(process.env.BLACKBOX_API_KEY),
+    });
+
     if (!process.env.BLACKBOX_API_KEY) {
+      console.error("[/api/chat] Missing BLACKBOX_API_KEY");
       return res.status(500).json({
         error: "Server configuration missing: BLACKBOX_API_KEY is not set.",
       });
@@ -47,6 +58,12 @@ module.exports = async (req, res) => {
           .slice(-10)
       : [];
 
+    console.log("[/api/chat] payload validated", {
+      messageLength: message.trim().length,
+      historyCount: cleanedHistory.length,
+      contentType: req.headers["content-type"] || "unknown",
+    });
+
     const reply = await callBlackboxAI({
       userMessage: message.trim(),
       history: cleanedHistory,
@@ -54,9 +71,12 @@ module.exports = async (req, res) => {
 
     return res.status(200).json({ reply });
   } catch (error) {
-    console.error("[/api/chat ERROR]", error.message);
+    console.error("[/api/chat ERROR]", {
+      message: error?.message,
+      stack: error?.stack,
+    });
     return res.status(500).json({
-      error: error.message || "Assistant temporarily unavailable.",
+      error: error?.message || "Assistant temporarily unavailable.",
     });
   }
 };

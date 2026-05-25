@@ -1518,21 +1518,39 @@
       addTypingIndicator();
 
       try {
+        const payload = {
+          message,
+          history: chatHistory.slice(-10)
+        };
+
+        console.log('[Chat] Sending request', {
+          url: '/api/chat',
+          messageLength: message.length,
+          historyCount: payload.history.length
+        });
+
         const response = await fetch('/api/chat', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            message,
-            history: chatHistory.slice(-10)
-          })
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(payload)
         });
 
         let data = {};
         try {
           data = await response.json();
-        } catch (_parseErr) {
+        } catch (parseErr) {
+          console.error('[Chat] JSON parse failure', parseErr);
           data = {};
         }
+
+        console.log('[Chat] Response', {
+          status: response.status,
+          ok: response.ok,
+          data
+        });
 
         if (!response.ok) {
           const serverMsg = data && data.error ? data.error : 'Network/API error';
@@ -1545,6 +1563,7 @@
         addMessage('assistant', reply);
         chatHistory.push({ role: 'assistant', content: reply });
       } catch (err) {
+        console.error('[Chat] Fetch failure', err);
         removeTypingIndicator();
         const fallback = 'Sorry, I’m temporarily unavailable due to a network issue. Please try again shortly or contact us at +254700070014.';
         addMessage('assistant', (err && err.message) ? err.message : fallback);
