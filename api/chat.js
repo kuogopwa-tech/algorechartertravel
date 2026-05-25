@@ -1,6 +1,35 @@
 const { callBlackboxAI } = require("../lib/blackbox");
 
-const mask = (value = "") => (value ? `${String(value).slice(0, 6)}***` : "missing");
+const IS_PROD = process.env.NODE_ENV === "production";
+const RATE_WINDOW_MS = 60 * 1000;
+const RATE_LIMIT = 15;
+const ipBuckets = new Map();
+
+function getClientIp(req) {
+  const forwarded = req.headers["x-forwarded-for"];
+  if (typeof forwarded === "string" && forwarded.trim()) {
+    return forwarded.split(",")[0].trim();
+  }
+  return req.socket?.remoteAddress || "unknown";
+}
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  const prev = ipBuckets.get(ip);
+
+  if (!prev || now - prev.start > RATE_WINDOW_MS) {
+    ipBuckets.set(ip, { start: now, count: 1 });
+    return { allowed: true, remaining: RATE_LIMIT - 1 };
+  }
+
+  if (prev.count >= RATE_LIMIT) {
+    return { allowed: false, remaining: 0 };
+  }
+
+  prev.count += 1;
+  ipBuckets.set(ip, prev);
+  return { allowed: true, remaining: RATE_LIMIT - prev.count };
+}
 
 async function parseBody(req) {
   if (req.body && typeof req.body === "object") return req.body;
@@ -13,7 +42,28 @@ async function parseBody(req) {
   try {
     return JSON.parse(raw);
   } catch {
-    throw new Error("Invalid JSON body.");
+    throw new Error("invalid_json");
+  }
+}
+
+function normalizeUserError(code) {
+  switch (code) {
+    case "missing_blackbox_api_key":
+    case "missing_blackbox_base_url":
+      return "Our assistant is currently being configured. Please try again shortly.";
+    case "provider_auth_error":
+      return "The assistant is temporarily unavailable. Please try again shortly.";
+    case "provider_rate_limited":
+      return "The assistant is currently busy. Please try again in a moment.";
+    case "provider_unavailable":
+    case "provider_invalid_json":
+    case "provider_invalid_shape":
+    case "AbortError":
+      return "Our AI assistant is temporarily unavailable. Please try again shortly.";
+    case "invalid_json":
+      return "Invalid request format. Please refresh and try again.";
+    default:
+      return "Sorry, our AI assistant is temporarily unavailable. Please try again shortly.";
   }
 }
 
@@ -25,26 +75,37 @@ module.exports = async (req, res) => {
   }
 
   try {
-    console.log("[/api/chat] request", {
-      method: req.method,
-      hasApiKey: Boolean(process.env.BLACKBOX_API_KEY),
-      model: process.env.BLACKBOX_MODEL || "(default)",
-      baseUrl: process.env.BLACKBOX_BASE_URL || "https://api.blackbox.ai",
-      apiKeyPreview: mask(process.env.BLACKBOX_API_KEY),
-    });
+    const ip = getClientIp(req);
+    const rate = checkRateLimit(ip);
+
+    res.setHeader("Cache-Control", "no-store");
+    res.setHeader("X-RateLimit-Remaining", String(rate.remaining));
+
+    if (!rate.allowed) {
+      if (!IS_PROD) console.warn("[/api/chat] rate limited", { ip });
+      return res.status(429).json({
+        error: "Too many requests. Please wait a moment and try again.",
+      });
+    }
 
     if (!process.env.BLACKBOX_API_KEY) {
       console.error("[/api/chat] Missing BLACKBOX_API_KEY");
       return res.status(500).json({
-        error: "Server configuration missing: BLACKBOX_API_KEY is not set.",
+        error: normalizeUserError("missing_blackbox_api_key"),
       });
     }
 
     const body = await parseBody(req);
-    const { message, history } = body || {};
+    const rawMessage = typeof body?.message === "string" ? body.message : "";
+    const message = rawMessage.replace(/\s+/g, " ").trim();
+    const history = body?.history;
 
-    if (!message || typeof message !== "string" || !message.trim()) {
-      return res.status(400).json({ error: "Message is required." });
+    if (!message) {
+      return res.status(400).json({ error: "Please enter a message." });
+    }
+
+    if (message.length > 1000) {
+      return res.status(400).json({ error: "Message is too long. Please keep it under 1000 characters." });
     }
 
     const cleanedHistory = Array.isArray(history)
@@ -56,27 +117,29 @@ module.exports = async (req, res) => {
               typeof m.content === "string"
           )
           .slice(-10)
+          .map((m) => ({
+            role: m.role,
+            content: m.content.replace(/\s+/g, " ").trim().slice(0, 2000),
+          }))
       : [];
 
-    console.log("[/api/chat] payload validated", {
-      messageLength: message.trim().length,
-      historyCount: cleanedHistory.length,
-      contentType: req.headers["content-type"] || "unknown",
-    });
-
     const reply = await callBlackboxAI({
-      userMessage: message.trim(),
+      userMessage: message,
       history: cleanedHistory,
     });
 
     return res.status(200).json({ reply });
   } catch (error) {
+    // Keep detailed diagnostic information in server logs only.
     console.error("[/api/chat ERROR]", {
       message: error?.message,
+      status: error?.status,
       stack: error?.stack,
+      rawBody: error?.rawBody,
     });
+
     return res.status(500).json({
-      error: error?.message || "Assistant temporarily unavailable.",
+      error: normalizeUserError(error?.message),
     });
   }
 };
