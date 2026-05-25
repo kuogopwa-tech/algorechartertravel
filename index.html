@@ -872,6 +872,31 @@
       background: #fff;
     }
 
+    .chat-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 8px 10px 12px;
+      background: #fff;
+      border-top: 1px dashed #e7edf7;
+    }
+
+    .chat-suggestion {
+      border: 1px solid rgba(0, 51, 102, 0.16);
+      background: #f9fbff;
+      color: var(--primary);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: .78rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .chat-suggestion:hover {
+      background: rgba(0, 51, 102, 0.08);
+      transform: translateY(-1px);
+    }
+
     /* Scroll reveal */
     .reveal {
       opacity: 0;
@@ -1297,8 +1322,8 @@
   <aside class="chat-widget" id="chatWidget" aria-live="polite" aria-label="Algore AI Assistant">
     <div class="chat-header">
       <div class="chat-title">
-        <i class="fa-solid fa-robot"></i>
-        <span>Algore AI Assistant</span>
+        <i class="fa-solid fa-plane-departure"></i>
+        <span>Algore Travel Concierge</span>
       </div>
       <button class="chat-close" id="chatClose" aria-label="Close chat">
         <i class="fa-solid fa-xmark"></i>
@@ -1306,7 +1331,7 @@
     </div>
 
     <div class="chat-messages" id="chatMessages">
-      <div class="msg bot">Hello! 👋 I’m Algore AI Assistant. I can help with tours, visas, flights, hotels, and recruitment opportunities abroad.</div>
+      <div class="msg bot" id="initialBotMessage"></div>
     </div>
 
     <form class="chat-form" id="chatForm">
@@ -1323,7 +1348,13 @@
         <i class="fa-solid fa-paper-plane"></i>
       </button>
     </form>
-    <p class="chat-note">For bookings, include destination, dates, number of travelers, and your contact number.</p>
+    <div class="chat-suggestions" aria-label="Quick suggestions">
+      <button type="button" class="chat-suggestion">Best Dubai packages</button>
+      <button type="button" class="chat-suggestion">Visa assistance</button>
+      <button type="button" class="chat-suggestion">Holiday destinations</button>
+      <button type="button" class="chat-suggestion">Book a safari</button>
+    </div>
+    <p class="chat-note">For quick booking support, include destination, travel dates, number of travelers, and your phone number.</p>
   </aside>
 
   <button class="scroll-top" id="scrollTop" aria-label="Back to top"><i class="fa-solid fa-chevron-up"></i></button>
@@ -1420,8 +1451,15 @@
     const chatForm = document.getElementById('chatForm');
     const chatInput = document.getElementById('chatInput');
     const chatMessages = document.getElementById('chatMessages');
+    const chatSuggestions = document.querySelectorAll('.chat-suggestion');
 
     const chatHistory = [];
+
+    // Time-based greeting for a more concierge-style branded experience
+    const initialBotMessageEl = document.getElementById('initialBotMessage');
+    const hour = new Date().getHours();
+    const daytimeGreeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+    initialBotMessageEl.innerHTML = `${daytimeGreeting} and Karibu to <strong>Algore Charter Travels</strong> ✈️<br/>I’m your travel concierge. I can help with Dubai packages, visa assistance, holiday destinations, and safari bookings.`;
 
     const escapeHtml = (text) =>
       text
@@ -1470,10 +1508,8 @@
     chatToggle.addEventListener('click', () => setChatOpen(true));
     chatClose.addEventListener('click', () => setChatOpen(false));
 
-    chatForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const message = chatInput.value.trim();
+    const sendChatMessage = async (rawMessage) => {
+      const message = (rawMessage || '').trim();
       if (!message) return; // Prevent empty messages
 
       addMessage('user', message);
@@ -1505,6 +1541,18 @@
         removeTypingIndicator();
         addMessage('assistant', 'Sorry, I’m temporarily unavailable due to a network issue. Please try again shortly or contact us at +254700070014.');
       }
+    };
+
+    chatForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await sendChatMessage(chatInput.value);
+    });
+
+    chatSuggestions.forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        setChatOpen(true);
+        await sendChatMessage(btn.textContent || '');
+      });
     });
 
     // Footer year
