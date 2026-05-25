@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Algore Charter Travels</title>
+  <link rel="icon" href="images/logo.png" type="image/x-icon">
+  <style>
+    :root {
+      --primary: #0b2e59;
+      --primary-soft: #123f78;
+      --accent: #f4a100;
+      --bg: #f5f8fc;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #5b6575;
+      --border: #e2e8f0;
+      --shadow: 0 14px 36px rgba(14, 43, 82, 0.12);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      line-height: 1.6;
+      color: var(--text);
+      background: linear-gradient(180deg, #f8fbff 0%, #eef4fb 100%);
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11, 46, 89, 0.96);
+      color: #fff;
+      padding: 14px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 24px rgba(2, 14, 33, 0.22);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-img {
+      height: 58px;
+      width: 58px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255, 255, 255, 0.7);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.24);
+    }
+
+    header h1 {
+      font-size: 20px;
+      letter-spacing: 0.2px;
+      font-weight: 700;
+    }
+
+    nav {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: 999px;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    nav a:hover,
+    nav a.active {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .hero {
+      min-height: 82vh;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      padding: 44px;
+      background:
+        linear-gradient(rgba(3, 20, 40, 0.62), rgba(4, 22, 44, 0.68)),
+        url("https://images.unsplash.com/photo-1504196606672-aef5c9cefc92?auto=format&fit=crop&w=1800&q=80") center/cover;
+    }
+
+    .hero-content {
+      max-width: 720px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 18px;
+      padding: 30px;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+    }
+
+    .hero h2 {
+      font-size: clamp(30px, 5vw, 50px);
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      margin-bottom: 24px;
+      color: #edf5ff;
+    }
+
+    .btn {
+      background: var(--accent);
+      color: #111827;
+      padding: 12px 24px;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      display: inline-block;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 8px 20px rgba(244, 161, 0, 0.35);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(244, 161, 0, 0.4);
+    }
+
+    section {
+      padding: 76px 40px;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 14px;
+      color: var(--primary);
+      font-size: clamp(26px, 4vw, 34px);
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: var(--muted);
+      max-width: 760px;
+      margin: 0 auto 40px;
+    }
+
+    .services {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      background: var(--card);
+      padding: 24px;
+      text-align: center;
+      border-radius: 14px;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      box-shadow: 0 4px 16px rgba(14, 43, 82, 0.07);
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      color: var(--primary);
+      font-size: 19px;
+    }
+
+    .about {
+      max-width: 860px;
+      margin: auto;
+      text-align: center;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      box-shadow: 0 10px 24px rgba(14, 43, 82, 0.08);
+    }
+
+    .countries {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .country {
+      border: 1px solid #d3deec;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: #fff;
+      color: #163d6a;
+      font-weight: 600;
+    }
+
+    footer {
+      background: linear-gradient(145deg, #0a2b52, #123d75);
+      color: #fff;
+      padding: 48px 40px;
+      margin-top: 20px;
+    }
+
+    footer h3 {
+      margin-bottom: 12px;
+      font-size: 19px;
+    }
+
+    footer p,
+    footer a {
+      font-size: 14px;
+      color: #e4efff;
+      text-decoration: none;
+      margin-bottom: 6px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+
+    form input,
+    form textarea {
+      width: 100%;
+      padding: 11px 12px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+      outline: none;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    form input::placeholder,
+    form textarea::placeholder {
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    form input:focus,
+    form textarea:focus {
+      border-color: #ffd587;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    form button {
+      width: 100%;
+    }
+
+    @media (max-width: 900px) {
+      header {
+        flex-direction: column;
+        gap: 10px;
+        padding: 14px 18px;
+      }
+
+      .hero {
+        padding: 22px;
+      }
+
+      .hero-content {
+        padding: 22px;
+      }
+
+      section {
+        padding: 56px 20px;
+      }
+
+      .logo-img {
+        height: 46px;
+        width: 46px;
+      }
+
+      header h1 {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-container">
+      <img src="images/logo.png" alt="Algore Charter Travels Logo" class="logo-img">
+      <h1>Algore Charter Travels</h1>
+    </div>
+    <nav>
+      <a href="#" id="home">Home</a>
+      <a href="#about" id="about-link">About</a>
+      <a href="#services" id="services-link">Services</a>
+      <a href="#destinations" id="destinations-link">Destinations</a>
+      <a href="#contact" id="contact-link">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h2>Dreams Are Possible</h2>
+      <p>Tours • Charter Flights • Visa Assistance • Jobs Abroad</p>
+      <a class="btn" href="#contact">Contact Us</a>
+    </div>
+  </section>
+
+  <section id="services">
+    <h2 class="section-title">Our Services</h2>
+    <p class="section-subtitle">Professional travel, charter, and recruitment support designed for comfort, reliability, and confidence.</p>
+    <div class="services">
+      <div class="card"><h3>Charter Flights</h3><p>Reliable private and group charter flights.</p></div>
+      <div class="card"><h3>Tours & Travel</h3><p>Local and international tour packages.</p></div>
+      <div class="card"><h3>Hotel Booking</h3><p>Affordable hotel reservations worldwide.</p></div>
+      <div class="card"><h3>Visa Processing</h3><p>Tourist, work and visit visas.</p></div>
+      <div class="card"><h3>Jobs Abroad</h3><p>Recruitment and work placement.</p></div>
+      <div class="card"><h3>Car / Lorry / Bus Hire</h3><p>Transport solutions for all needs.</p></div>
+    </div>
+  </section>
+
+  <section id="about">
+    <h2 class="section-title">About Us</h2>
+    <div class="about">
+      <p>
+        Algore Charter Travels is a professional tours, travel, and recruitment company serving clients across Africa, the Middle East, and Asia. We focus on dependable service, transparency, and excellent customer care at every step.
+      </p>
+    </div>
+  </section>
+
+  <section id="destinations">
+    <h2 class="section-title">Destinations</h2>
+    <p class="section-subtitle">Popular countries where we support travel, visa services, and opportunities abroad.</p>
+    <div class="countries">
+      <div class="country">Kenya</div>
+      <div class="country">Qatar</div>
+      <div class="country">UAE</div>
+      <div class="country">Saudi Arabia</div>
+      <div class="country">Uganda</div>
+      <div class="country">Tanzania</div>
+      <div class="country">Kuwait</div>
+    </div>
+  </section>
+
+  <footer id="contact">
+    <div class="footer-grid">
+      <div>
+        <h3>Contact Us</h3>
+        <p>📞 +254 700 070 014</p>
+        <p>📞 +974 7470 3290</p>
+        <p>📞 +254 101 070 014</p>
+        <p>📧 algorechartertravels@gmail.com</p>
+      </div>
+      <div>
+        <h3>Send Message</h3>
+        <form id="contactForm">
+          <input type="text" placeholder="Your Name" required>
+          <input type="email" placeholder="Email" required>
+          <textarea placeholder="Message" rows="3" required></textarea>
+          <button type="submit" class="btn">Send Message</button>
+        </form>
+      </div>
+      <div>
+        <h3>Social Media</h3>
+        <p>TikTok: Algore Charter Travels</p>
+        <p>Facebook: Algore Charter Travels</p>
+        <p>Instagram</p>
+        <p>YouTube</p>
+      </div>
+      <div>
+        <h3>Algore Charter Travels</h3>
+        <p>Your trusted partner in travel, visas, and jobs abroad.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Thank you! Your message has been sent. We will contact you soon.');
+      this.reset();
+    });
+
+    document.querySelectorAll('nav a').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href.startsWith('#')) {
+          e.preventDefault();
+          const targetId = href.substring(1);
+          const targetElement = document.getElementById(targetId);
+          if (targetElement) {
+            window.scrollTo({
+              top: targetElement.offsetTop - 82,
+              behavior: 'smooth'
+            });
+          }
+        }
+      });
+    });
+
+    window.addEventListener('scroll', function() {
+      let current = '';
+      const sections = document.querySelectorAll('section');
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        if (window.scrollY >= sectionTop - 120) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      document.querySelectorAll('nav a').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + current) {
+          link.classList.add('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

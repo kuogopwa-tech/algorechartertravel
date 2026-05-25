@@ -1,362 +1,1515 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Algore Charter Travels</title>
-  <link rel="icon" href="images/logo.png" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Algore Charter Travels | Dreams Are Possible</title>
+  <meta name="description" content="Algore Charter Travels - Dreams Are Possible. Premium tours, travel management, visa applications, hotel and flight booking, recruitment services, and work abroad opportunities across Africa, Gulf, and Europe." />
+  <meta name="keywords" content="Algore Charter Travels, tours and travel, charter flights, visa processing, hotel booking, jobs abroad, Kenya travel, Qatar travel, UAE travel, Saudi Arabia travel" />
+  <meta name="author" content="Algore Charter Travels" />
+  <meta name="theme-color" content="#003366" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, Helvetica, sans-serif;
+    :root {
+      --primary: #003366;
+      --primary-dark: #00264d;
+      --accent: #f4a100;
+      --dark: #0b1f33;
+      --text: #243447;
+      --muted: #607287;
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --shadow: 0 14px 35px rgba(0, 51, 102, 0.14);
+      --radius: 16px;
+      --transition: all 0.3s ease;
     }
 
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
+      font-family: "Poppins", sans-serif;
+      color: var(--text);
+      background: var(--bg);
       line-height: 1.6;
-      color: #222;
+      overflow-x: hidden;
     }
 
-    header {
-      background: #003366;
+    .container {
+      width: min(1120px, 92%);
+      margin: auto;
+    }
+
+    /* Loading Animation */
+    #preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: linear-gradient(135deg, #003366, #001a33);
+      display: grid;
+      place-items: center;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .loader-wrap {
+      text-align: center;
       color: #fff;
-      padding: 15px 40px;
+    }
+
+    .loader-wrap i {
+      font-size: 2.4rem;
+      animation: fly 1.4s ease-in-out infinite;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+
+    .loader-bar {
+      width: 220px;
+      height: 8px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .loader-bar span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: #fff;
+      animation: loading 1.5s linear infinite;
+    }
+
+    @keyframes fly {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(-8deg); }
+    }
+
+    @keyframes loading {
+      0% { width: 0; }
+      100% { width: 100%; }
+    }
+
+    /* Navbar */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      background: rgba(255,255,255,0.82);
+      border-bottom: 1px solid rgba(12, 34, 80, 0.08);
+    }
+
+    .nav-inner {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      min-height: 74px;
+      gap: 20px;
     }
 
-    .logo-container {
-      display: flex;
+    .brand {
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--dark);
+      text-decoration: none;
+      letter-spacing: 0.2px;
+      display: inline-flex;
       align-items: center;
-      gap: 15px;
+      gap: 10px;
+      line-height: 1.2;
     }
 
     .logo-img {
-      height: 90px;
-      width: 90px;
-      border-radius: 90%;
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
       object-fit: cover;
+      box-shadow: 0 8px 18px rgba(0, 51, 102, 0.22);
+      flex-shrink: 0;
+      background: #fff;
+      padding: 2px;
     }
 
-    header h1 {
-      font-size: 22px;
+    .brand small {
+      display: block;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
     }
 
-    nav a {
-      color: #fff;
-      margin-left: 20px;
-      text-decoration: none;
-      font-size: 14px;
-    }
+    .brand span { color: var(--primary); }
 
-    nav a:hover {
-      text-decoration: underline;
-    }
-
-    .hero {
-      background: linear-gradient(rgba(0,0,0,.6), rgba(0,0,0,.6)),
-      url("https://images.unsplash.com/photo-1504196606672-aef5c9cefc92") center/cover;
-      height: 80vh;
-      color: #fff;
+    .nav-links {
       display: flex;
+      list-style: none;
+      gap: 8px;
       align-items: center;
-      padding: 40px;
     }
 
-    .hero h2 {
-      font-size: 40px;
-      margin-bottom: 10px;
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 500;
+      padding: 10px 14px;
+      border-radius: 10px;
+      transition: var(--transition);
     }
 
-    .hero p {
-      font-size: 18px;
-      margin-bottom: 20px;
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--primary);
+      background: rgba(0, 51, 102, 0.08);
     }
 
     .btn {
-      background: #f4a100;
-      color: #000;
-      padding: 12px 25px;
+      border: 0;
       text-decoration: none;
-      border-radius: 5px;
-      font-weight: bold;
-      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
       cursor: pointer;
-      display: inline-block;
     }
 
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 34px rgba(0, 51, 102, 0.24);
+    }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: 0;
+      font-size: 1.35rem;
+      color: var(--dark);
+      cursor: pointer;
+    }
+
+    /* Hero */
+    .hero-section {
+      position: relative;
+      overflow: hidden;
+      min-height: 85vh;
+      display: flex;
+      align-items: center;
+      background:
+        linear-gradient(115deg, rgba(0, 26, 51, 0.88), rgba(0, 51, 102, 0.72)),
+        url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1800&auto=format&fit=crop")
+        center/cover no-repeat;
+      color: #fff;
+    }
+
+    .hero-content {
+      max-width: 680px;
+      padding: 80px 0 60px;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 7px 14px;
+      border-radius: 99px;
+      margin-bottom: 20px;
+    }
+
+    .hero-content h1 {
+      font-size: clamp(2rem, 4.2vw, 3.3rem);
+      line-height: 1.2;
+      margin-bottom: 16px;
+      font-weight: 800;
+      animation: fadeUp 0.9s ease both;
+    }
+
+    .animated-phrase {
+      display: inline-block;
+      color: var(--accent);
+      text-shadow: 0 0 14px rgba(244,161,0,0.3);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-content p {
+      font-size: clamp(1rem, 2vw, 1.08rem);
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 28px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.65);
+      color: #fff;
+      box-shadow: none;
+    }
+
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.14);
+      box-shadow: none;
+    }
+
+    /* Shared Section */
     section {
-      padding: 60px 40px;
+      padding: 86px 0;
     }
 
     .section-title {
       text-align: center;
-      margin-bottom: 40px;
-      color: #003366;
+      margin-bottom: 14px;
+      font-size: clamp(1.5rem, 2.5vw, 2rem);
+      color: var(--dark);
     }
 
-    .services {
+    .section-subtitle {
+      text-align: center;
+      margin: 0 auto 40px;
+      max-width: 700px;
+      color: var(--muted);
+    }
+
+    /* Services */
+    .service-icons {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px;
     }
 
-    .card {
-      border: 1px solid #ddd;
+    .icon-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(10, 34, 80, 0.07);
+      transition: var(--transition);
+      border: 1px solid rgba(10, 34, 80, 0.05);
+    }
+
+    .icon-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 18px 30px rgba(10, 34, 80, 0.12);
+      border-color: rgba(0, 51, 102, 0.22);
+    }
+
+    .icon-card i {
+      width: 62px;
+      height: 62px;
+      line-height: 62px;
+      border-radius: 14px;
+      font-size: 1.4rem;
+      color: #fff;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+    }
+
+    .icon-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      color: var(--dark);
+    }
+
+    .icon-card p {
+      color: var(--muted);
+      font-size: 0.96rem;
+    }
+
+    /* About */
+    .about-us-section .about-wrap {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .about-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: 0 10px 24px rgba(10, 34, 80, 0.08);
+    }
+
+    .about-card p {
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .stat {
+      background: #f2f6ff;
+      padding: 16px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .stat h4 {
+      font-size: 1.2rem;
+      color: var(--primary-dark);
+      margin-bottom: 2px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .about-image {
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      min-height: 330px;
+      background: url("https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=1200&auto=format&fit=crop") center/cover no-repeat;
+    }
+
+    /* Destinations */
+    .destinations-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .destination-card {
+      position: relative;
+      min-height: 250px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(10, 34, 80, 0.1);
+      isolation: isolate;
+    }
+
+    .destination-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.55s ease;
+    }
+
+    .destination-card:hover img { transform: scale(1.09); }
+
+    .destination-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.7));
+      z-index: 1;
+    }
+
+    .destination-card h3 {
+      position: absolute;
+      z-index: 2;
+      left: 16px;
+      bottom: 14px;
+      color: #fff;
+      font-size: 1.1rem;
+    }
+
+    /* Why choose us */
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .why-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 8px 20px rgba(10, 34, 80, 0.08);
+      border: 1px solid rgba(0, 51, 102, 0.08);
+    }
+
+    .why-card i {
+      color: var(--accent);
+      font-size: 1.35rem;
+      margin-bottom: 10px;
+    }
+
+    .why-card h3 { color: var(--dark); font-size: 1.04rem; margin-bottom: 6px; }
+    .why-card p { color: var(--muted); font-size: 0.93rem; }
+
+    /* Testimonials */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .testimonial-card {
+      background: var(--card);
+      border-radius: 14px;
       padding: 20px;
+      box-shadow: 0 8px 20px rgba(10, 34, 80, 0.08);
+    }
+
+    .stars { color: var(--accent); margin-bottom: 8px; }
+    .testimonial-card p { color: var(--muted); font-size: 0.94rem; margin-bottom: 10px; }
+    .testimonial-card h4 { font-size: 1rem; color: var(--dark); }
+    .testimonial-card span { font-size: 0.86rem; color: var(--muted); }
+
+    /* Recruitment */
+    .recruit-grid,
+    .jobs-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .recruit-card,
+    .job-card,
+    .country-pill {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 8px 20px rgba(10, 34, 80, 0.08);
+      border: 1px solid rgba(0, 51, 102, 0.08);
+      transition: var(--transition);
+    }
+
+    .recruit-card:hover,
+    .job-card:hover,
+    .country-pill:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 28px rgba(0, 51, 102, 0.14);
+    }
+
+    .recruit-card i,
+    .job-card i {
+      color: var(--accent);
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+    }
+
+    .recruit-card h3,
+    .job-card h3 {
+      color: var(--dark);
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+
+    .recruit-card p,
+    .job-card p {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .countries-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .country-pill {
       text-align: center;
-      border-radius: 6px;
-      transition: transform 0.3s;
+      font-weight: 600;
+      color: var(--primary);
+      padding: 14px 10px;
+      background: linear-gradient(180deg, #fff, #f7fbff);
     }
 
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    /* Contact */
+    .contact-section .contact-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
     }
 
-    .card h3 {
-      margin-bottom: 10px;
-      color: #003366;
+    .contact-info, .contact-form {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: 0 10px 24px rgba(10, 34, 80, 0.08);
     }
 
-    .about {
-      max-width: 800px;
-      margin: auto;
-      text-align: center;
-    }
-
-    .countries {
+    .info-item {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 15px;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      color: var(--muted);
     }
 
-    .country {
-      border: 1px solid #ccc;
-      padding: 10px 20px;
-      border-radius: 20px;
-      background: #f9f9f9;
+    .info-item i {
+      margin-top: 5px;
+      color: var(--primary);
+      width: 20px;
     }
 
-    footer {
-      background: #003366;
-      color: #fff;
-      padding: 40px;
+    .contact-form form {
+      display: grid;
+      gap: 12px;
     }
 
-    footer h3 {
-      margin-bottom: 10px;
+    .form-success {
+      display: none;
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #e8f8ee;
+      color: #137a3b;
+      border: 1px solid #bce8cd;
+      font-size: 0.9rem;
     }
 
-    footer p, footer a {
-      font-size: 14px;
-      color: #fff;
-      text-decoration: none;
+    .form-success.show { display: block; }
+
+    input, textarea {
+      width: 100%;
+      border: 1px solid #dbe2f1;
+      border-radius: 10px;
+      padding: 12px 13px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: var(--transition);
+      color: var(--text);
+      background: #fff;
+    }
+
+    textarea { min-height: 130px; resize: vertical; }
+
+    input:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(0, 51, 102, 0.14);
+    }
+
+    /* Footer */
+    .footer {
+      background: linear-gradient(135deg, #001a33, #003366);
+      color: rgba(255,255,255,0.9);
+      padding: 56px 0 24px;
+      margin-top: 30px;
     }
 
     .footer-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 22px;
     }
 
-    form input, form textarea {
-      width: 100%;
+    .footer h4 {
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .footer p, .footer a {
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    .footer a:hover { color: #fff; }
+
+    .socials {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .socials a {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,0.14);
+      transition: var(--transition);
+    }
+
+    .socials a:hover {
+      background: rgba(255,255,255,0.28);
+      transform: translateY(-2px);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.15);
+      padding-top: 15px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.8);
+    }
+
+    /* WhatsApp Floating Button */
+    .whatsapp-float-btn {
+      position: fixed;
+      right: 18px;
+      bottom: 82px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #25d366;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 1.7rem;
+      text-decoration: none;
+      z-index: 999;
+      box-shadow: 0 12px 24px rgba(37, 211, 102, 0.35);
+      animation: pulse 1.8s infinite;
+      transition: var(--transition);
+    }
+
+    .whatsapp-float-btn:hover {
+      transform: scale(1.08);
+      background: #18be57;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.45); }
+      70% { box-shadow: 0 0 0 16px rgba(37, 211, 102, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+    }
+
+    .scroll-top {
+      position: fixed;
+      right: 20px;
+      bottom: 18px;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: 0;
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 10px 20px rgba(0, 51, 102, 0.28);
+      cursor: pointer;
+      z-index: 998;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(8px);
+      transition: all .3s ease;
+    }
+
+    .scroll-top.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    /* AI Chat Widget */
+    .chat-widget {
+      position: fixed;
+      right: 20px;
+      bottom: 140px;
+      width: min(360px, calc(100vw - 24px));
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 18px 36px rgba(0, 24, 48, 0.2);
+      border: 1px solid rgba(0, 51, 102, 0.12);
+      z-index: 1001;
+      overflow: hidden;
+      transform: translateY(12px) scale(.98);
+      opacity: 0;
+      visibility: hidden;
+      transition: all .25s ease;
+    }
+
+    .chat-widget.open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+    }
+
+    .chat-header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .chat-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: .94rem;
+      font-weight: 600;
+    }
+
+    .chat-title i { color: var(--accent); }
+
+    .chat-close {
+      border: 0;
+      background: rgba(255,255,255,0.14);
+      color: #fff;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .chat-messages {
+      max-height: 340px;
+      overflow-y: auto;
+      padding: 12px;
+      background: #f7f9fc;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .msg {
+      max-width: 86%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      white-space: pre-wrap;
+    }
+
+    .msg.bot {
+      align-self: flex-start;
+      background: #fff;
+      border: 1px solid #e4e9f3;
+      color: var(--text);
+    }
+
+    .msg.user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, var(--primary), #0a4f94);
+      color: #fff;
+    }
+
+    .typing {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .typing span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #8d99ab;
+      animation: blink 1s infinite ease-in-out;
+    }
+
+    .typing span:nth-child(2) { animation-delay: .15s; }
+    .typing span:nth-child(3) { animation-delay: .3s; }
+
+    @keyframes blink {
+      0%, 80%, 100% { opacity: .3; transform: translateY(0); }
+      40% { opacity: 1; transform: translateY(-2px); }
+    }
+
+    .chat-form {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
       padding: 10px;
-      margin-bottom: 12px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      border-top: 1px solid #e8edf6;
+      background: #fff;
     }
 
-    form button {
-      width: 100%;
+    .chat-input {
+      border: 1px solid #dbe2f1;
+      border-radius: 10px;
+      padding: 10px 11px;
+      font: inherit;
+      font-size: .92rem;
+      outline: none;
     }
 
-    @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-        padding: 15px;
-      }
-      .logo-container {
-        margin-bottom: 10px;
-      }
-      nav {
-        margin-top: 10px;
-      }
-      nav a {
-        margin: 0 8px;
-        font-size: 13px;
-      }
-      .hero {
-        padding: 20px;
-        text-align: center;
-      }
-      .hero h2 {
-        font-size: 28px;
-      }
-      .hero p {
-        font-size: 16px;
-      }
-      section {
-        padding: 40px 20px;
-      }
-      .services {
+    .chat-send {
+      border: 0;
+      border-radius: 10px;
+      width: 42px;
+      background: var(--primary);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .chat-toggle {
+      position: fixed;
+      right: 20px;
+      bottom: 140px;
+      width: 58px;
+      height: 58px;
+      border: 0;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      font-size: 1.4rem;
+      box-shadow: 0 14px 28px rgba(0, 51, 102, 0.3);
+      z-index: 1002;
+      cursor: pointer;
+      transition: transform .2s ease;
+    }
+
+    .chat-toggle:hover { transform: translateY(-2px); }
+
+    .chat-note {
+      color: var(--muted);
+      font-size: .78rem;
+      padding: 0 10px 10px;
+      background: #fff;
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: all 0.65s ease;
+    }
+    .reveal.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 980px) {
+      .service-icons { grid-template-columns: repeat(2, 1fr); }
+      .about-us-section .about-wrap,
+      .contact-section .contact-wrap,
+      .footer-grid {
         grid-template-columns: 1fr;
       }
-      .logo-img {
-        height: 45px;
-        width: 45px;
+      .about-image { min-height: 280px; }
+      .destinations-grid { grid-template-columns: repeat(2, 1fr); }
+      .why-grid { grid-template-columns: repeat(2, 1fr); }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .recruit-grid, .jobs-grid { grid-template-columns: repeat(2, 1fr); }
+      .countries-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 760px) {
+      .menu-toggle { display: block; }
+      .nav-links {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 74px;
+        background: #fff;
+        flex-direction: column;
+        gap: 2px;
+        padding: 10px;
+        border-bottom: 1px solid #e7ecf7;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.35s ease;
+      }
+
+      .nav-links.show {
+        max-height: 320px;
+      }
+
+      .nav-links li {
+        width: 100%;
+      }
+
+      .nav-links a {
+        display: block;
+      }
+
+      .hero-section {
+        min-height: 78vh;
+      }
+
+      .service-icons {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-actions {
+        width: 100%;
+      }
+
+      .hero-actions .btn {
+        flex: 1;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .recruit-grid, .jobs-grid, .countries-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .chat-widget {
+        right: 12px;
+        bottom: 128px;
+        width: calc(100vw - 24px);
+      }
+
+      .chat-toggle {
+        right: 12px;
+        bottom: 128px;
       }
     }
   </style>
 </head>
-
 <body>
-
-<header>
-  <div class="logo-container">
-    <img src="images/logo.png" alt="Algore Charter Travels Logo" class="logo-img">
-    <h1>Algore Charter Travels</h1>
+  <!-- Loading Animation -->
+  <div id="preloader" aria-hidden="true">
+    <div class="loader-wrap">
+      <i class="fa-solid fa-plane-departure"></i>
+      <div class="loader-bar"><span></span></div>
+      <p style="margin-top:10px;font-size:.92rem;opacity:.9;">Preparing your next journey...</p>
+    </div>
   </div>
-  <nav>
-    <a href="#" id="home">Home</a>
-    <a href="#about" id="about-link">About</a>
-    <a href="#services" id="services-link">Services</a>
-    <a href="#destinations" id="destinations-link">Destinations</a>
-    <a href="#contact" id="contact-link">Contact</a>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a href="#home" class="brand" aria-label="Algore Charter Travels Home">
+        <img src="images/logo.png" alt="Algore Charter Travels Logo" class="logo-img" />
+        <span>
+          Algore <span>Charter Travels</span>
+          <small>Dreams Are Possible</small>
+        </span>
+      </a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home" class="active">Home</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#recruitment">Recruitment</a></li>
+        <li><a href="#countries">Countries</a></li>
+        <li><a href="#job-categories">Jobs</a></li>
+        <li><a href="#destinations">Destinations</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <a href="#contact" class="btn" style="padding:10px 16px;">Get Quote</a>
+    </div>
   </nav>
-</header>
 
-<section class="hero">
-  <div>
-    <h2>Dreams Are Possible</h2>
-    <p>Tours • Charter Flights • Visa Assistance • Jobs Abroad</p>
-    <a class="btn" href="#contact">Contact Us</a>
-  </div>
-</section>
+  <!-- Hero Section -->
+  <section class="hero-section" id="home">
+    <div class="container">
+      <div class="hero-content reveal">
+        <div class="hero-tag">
+          <i class="fa-solid fa-star"></i>
+          Trusted Tours, Travel & International Recruitment Partner
+        </div>
+        <h1>Discover Global Journeys with <span class="animated-phrase">Algore Charter Travels</span></h1>
+        <p>
+          <strong>Dreams Are Possible.</strong> We provide premium travel solutions including Charter Flights,
+          Tours & Travel, Hotel Booking, Visa Processing, Jobs Abroad, and Car / Lorry / Bus Hire.
+        </p>
+        <div class="hero-actions">
+          <a href="#services" class="btn"><i class="fa-solid fa-compass"></i> Explore Services</a>
+          <a href="#contact" class="btn btn-outline"><i class="fa-solid fa-phone"></i> Speak to Expert</a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<section id="services">
-  <h2 class="section-title">Our Services</h2>
-  <div class="services">
-    <div class="card"><h3>Charter Flights</h3><p>Reliable private and group charter flights.</p></div>
-    <div class="card"><h3>Tours & Travel</h3><p>Local and international tour packages.</p></div>
-    <div class="card"><h3>Hotel Booking</h3><p>Affordable hotel reservations worldwide.</p></div>
-    <div class="card"><h3>Visa Processing</h3><p>Tourist, work and visit visas.</p></div>
-    <div class="card"><h3>Jobs Abroad</h3><p>Recruitment and work placement.</p></div>
-    <div class="card"><h3>Car / Lorry / Bus Hire</h3><p>Transport solutions for all needs.</p></div>
-  </div>
-</section>
+  <!-- Services Section -->
+  <section class="services-section" id="services">
+    <div class="container">
+      <h2 class="section-title reveal">Our Professional Services</h2>
+      <p class="section-subtitle reveal">
+        Premium travel and recruitment services designed for individuals, families, businesses and job seekers.
+      </p>
+      <div class="service-icons">
+        <div class="icon-card reveal">
+          <i class="fa-solid fa-passport"></i>
+          <h3>Visa Applications</h3>
+          <p>Complete visa guidance and document handling for business, tourism and work travel.</p>
+        </div>
+        <div class="icon-card reveal">
+          <i class="fa-solid fa-hotel"></i>
+          <h3>Hotel Booking</h3>
+          <p>Reliable accommodation options across trusted local and international partner hotels.</p>
+        </div>
+        <div class="icon-card reveal">
+          <i class="fa-solid fa-plane-departure"></i>
+          <h3>Flight Booking</h3>
+          <p>Flexible domestic and international flight reservations with professional support.</p>
+        </div>
+        <div class="icon-card reveal">
+          <i class="fa-solid fa-shield-heart"></i>
+          <h3>Travel Insurance</h3>
+          <p>Secure your journey with practical insurance solutions for peace of mind.</p>
+        </div>
+        <div class="icon-card reveal">
+          <i class="fa-solid fa-link"></i>
+          <h3>Work Abroad Links</h3>
+          <p>Connect to verified opportunities and migration pathways through trusted partners.</p>
+        </div>
+        <div class="icon-card reveal">
+          <i class="fa-solid fa-users-gear"></i>
+          <h3>Recruitment Services</h3>
+          <p>Skilled and unskilled manpower recruitment for Gulf and international markets.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<section id="about">
-  <h2 class="section-title">About Us</h2>
-  <div class="about">
-    <p>
-      Algore Charter Travels is a professional tours, travel and recruitment company
-      serving clients across Africa, the Middle East and Asia. We are committed to
-      reliable service, transparency and customer satisfaction.
-    </p>
-  </div>
-</section>
+  <!-- About Us Section -->
+  <section class="about-us-section" id="about">
+    <div class="container">
+      <h2 class="section-title reveal">About Algore Charter Travels</h2>
+      <p class="section-subtitle reveal">Experience-driven planning backed by professional support and transparent service.</p>
+      <div class="about-wrap">
+        <div class="about-card reveal">
+          <p>
+            Algore Charter Travels is a premium travel and manpower recruitment company delivering integrated
+            solutions for travel, migration, and international employment. We support both individual and
+            corporate clients through visa processing, global travel planning, and workforce placement across
+            Gulf and other international markets.
+          </p>
+          <a href="#contact" class="btn"><i class="fa-solid fa-paper-plane"></i> Contact Us</a>
+          <div class="stats" style="margin-top:18px;">
+            <div class="stat">
+              <h4>5K+</h4>
+              <span>Happy Travelers</span>
+            </div>
+            <div class="stat">
+              <h4>300+</h4>
+              <span>Tour Packages</span>
+            </div>
+            <div class="stat">
+              <h4>24/7</h4>
+              <span>Travel Support</span>
+            </div>
+          </div>
+        </div>
+        <div class="about-image reveal" aria-label="Travel destination image"></div>
+      </div>
+    </div>
+  </section>
 
-<section id="destinations">
-  <h2 class="section-title">Destinations</h2>
-  <div class="countries">
-    <div class="country">Kenya</div>
-    <div class="country">Qatar</div>
-    <div class="country">UAE</div>
-    <div class="country">Saudi Arabia</div>
-    <div class="country">Uganda</div>
-    <div class="country">Tanzania</div>
-    <div class="country">Kuwait</div>
-  </div>
-</section>
+  <!-- Recruitment Section -->
+  <section id="recruitment">
+    <div class="container">
+      <h2 class="section-title reveal">International Recruitment Solutions</h2>
+      <p class="section-subtitle reveal">Professional manpower sourcing for Gulf jobs recruitment, skilled and unskilled roles, and international workforce solutions.</p>
+      <div class="recruit-grid">
+        <div class="recruit-card reveal"><i class="fa-solid fa-briefcase"></i><h3>Gulf Jobs Recruitment</h3><p>Specialized recruitment channels for employers and candidates across Gulf destinations.</p></div>
+        <div class="recruit-card reveal"><i class="fa-solid fa-user-check"></i><h3>Skilled & Unskilled Jobs</h3><p>Placement support for technical professionals and general labor opportunities abroad.</p></div>
+        <div class="recruit-card reveal"><i class="fa-solid fa-earth-asia"></i><h3>International Opportunities</h3><p>Expanded hiring pathways into reputable global markets with compliant documentation support.</p></div>
+        <div class="recruit-card reveal"><i class="fa-solid fa-people-group"></i><h3>Workforce Solutions</h3><p>Structured manpower supply for hospitality, healthcare, transport, security and service sectors.</p></div>
+      </div>
+    </div>
+  </section>
 
-<footer id="contact">
-  <div class="footer-grid">
-    <div>
-      <h3>Contact Us</h3>
-      <p>📞 +254 700 070 014</p>
-      <p>📞 +974 7470 3290</p>
-      <p>📞 +254 101 070 014</p>
-      <p>📧 algorechartertravels@gmail.com</p>
+  <!-- Recruitment Countries Section -->
+  <section id="countries">
+    <div class="container">
+      <h2 class="section-title reveal">Recruitment Destination Countries</h2>
+      <p class="section-subtitle reveal">We facilitate ethical recruitment connections to high-demand employment markets.</p>
+      <div class="countries-grid">
+        <div class="country-pill reveal">UAE</div>
+        <div class="country-pill reveal">Qatar</div>
+        <div class="country-pill reveal">Lebanon</div>
+        <div class="country-pill reveal">Saudi Arabia</div>
+        <div class="country-pill reveal">Bahrain</div>
+        <div class="country-pill reveal">Egypt</div>
+        <div class="country-pill reveal">Iraq</div>
+        <div class="country-pill reveal">Oman</div>
+        <div class="country-pill reveal">Jordan</div>
+        <div class="country-pill reveal">Kuwait</div>
+        <div class="country-pill reveal">Turkey</div>
+        <div class="country-pill reveal">Thailand</div>
+        <div class="country-pill reveal">Poland</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Job Categories Section -->
+  <section id="job-categories">
+    <div class="container">
+      <h2 class="section-title reveal">High-Demand Job Categories</h2>
+      <p class="section-subtitle reveal">We connect candidates to in-demand international roles with structured application support.</p>
+      <div class="jobs-grid">
+        <div class="job-card reveal"><i class="fa-solid fa-car-side"></i><h3>Drivers</h3><p>LMV, heavy vehicle and commercial transport opportunities.</p></div>
+        <div class="job-card reveal"><i class="fa-solid fa-user-shield"></i><h3>Security Guards</h3><p>Licensed and trained security staffing opportunities abroad.</p></div>
+        <div class="job-card reveal"><i class="fa-solid fa-utensils"></i><h3>Waitresses</h3><p>Hospitality placements in hotels, restaurants and service groups.</p></div>
+        <div class="job-card reveal"><i class="fa-solid fa-user-nurse"></i><h3>Nurses</h3><p>Healthcare placements with compliant documentation guidance.</p></div>
+        <div class="job-card reveal"><i class="fa-solid fa-chalkboard-user"></i><h3>Teachers</h3><p>Academic staffing opportunities in international institutions.</p></div>
+        <div class="job-card reveal"><i class="fa-solid fa-baby"></i><h3>Nannies</h3><p>Family support roles with structured screening and placement.</p></div>
+        <div class="job-card reveal"><i class="fa-solid fa-hand-holding-heart"></i><h3>Caregivers</h3><p>Elderly and assisted-living caregiver employment opportunities.</p></div>
+        <div class="job-card reveal"><i class="fa-solid fa-bell-concierge"></i><h3>Receptionists</h3><p>Front-office and customer relations roles in service sectors.</p></div>
+        <div class="job-card reveal"><i class="fa-solid fa-kitchen-set"></i><h3>Chefs</h3><p>Restaurant and hotel kitchen recruitment for diverse cuisines.</p></div>
+        <div class="job-card reveal"><i class="fa-solid fa-screwdriver-wrench"></i><h3>Skilled Workers</h3><p>Technical and trade-based opportunities in multiple industries.</p></div>
+        <div class="job-card reveal"><i class="fa-solid fa-helmet-safety"></i><h3>Unskilled Workers</h3><p>General labor and entry-level workforce opportunities abroad.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Destinations Section -->
+  <section id="destinations">
+    <div class="container">
+      <h2 class="section-title reveal">Top Destinations We Serve</h2>
+      <p class="section-subtitle reveal">Explore premium travel and work opportunities across trusted international destinations.</p>
+      <div class="destinations-grid">
+        <article class="destination-card reveal"><img src="https://images.unsplash.com/photo-1523805009345-7448845a9e53?q=80&w=900&auto=format&fit=crop" alt="Kenya"><h3>Kenya</h3></article>
+        <article class="destination-card reveal"><img src="https://images.unsplash.com/photo-1577083552431-6e5fd01aa342?q=80&w=900&auto=format&fit=crop" alt="Qatar"><h3>Qatar</h3></article>
+        <article class="destination-card reveal"><img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=900&auto=format&fit=crop" alt="UAE"><h3>UAE</h3></article>
+        <article class="destination-card reveal"><img src="https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?q=80&w=900&auto=format&fit=crop" alt="Saudi Arabia"><h3>Saudi Arabia</h3></article>
+        <article class="destination-card reveal"><img src="https://images.unsplash.com/photo-1603228254119-e6a4d095dc59?q=80&w=900&auto=format&fit=crop" alt="Uganda"><h3>Uganda</h3></article>
+        <article class="destination-card reveal"><img src="https://images.unsplash.com/photo-1576485290814-1c72aa4bbb8e?q=80&w=900&auto=format&fit=crop" alt="Tanzania"><h3>Tanzania</h3></article>
+        <article class="destination-card reveal"><img src="https://images.unsplash.com/photo-1518684079-3c830dcef090?q=80&w=900&auto=format&fit=crop" alt="Kuwait"><h3>Kuwait</h3></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Choose Us Section -->
+  <section id="why-us">
+    <div class="container">
+      <h2 class="section-title reveal">Why Choose Algore Charter Travels</h2>
+      <p class="section-subtitle reveal">Professional, dependable and customer-focused travel support for every journey.</p>
+      <div class="why-grid">
+        <div class="why-card reveal"><i class="fa-solid fa-shield-heart"></i><h3>Trusted Service</h3><p>Built on integrity, transparent guidance, and dependable delivery.</p></div>
+        <div class="why-card reveal"><i class="fa-solid fa-coins"></i><h3>Affordable Packages</h3><p>Competitive pricing with value-driven travel and hiring packages.</p></div>
+        <div class="why-card reveal"><i class="fa-solid fa-file-circle-check"></i><h3>Fast Visa Processing</h3><p>Efficient document support to reduce delays and improve approvals.</p></div>
+        <div class="why-card reveal"><i class="fa-solid fa-headset"></i><h3>Professional Support</h3><p>Responsive team support before, during, and after your trip.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials">
+    <div class="container">
+      <h2 class="section-title reveal">What Our Clients Say</h2>
+      <p class="section-subtitle reveal">Real feedback from travelers and job seekers who trusted our expertise.</p>
+      <div class="testimonials-grid">
+        <article class="testimonial-card reveal">
+          <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+          <p>"Algore Charter Travels handled my UAE visa and flight perfectly. The process was smooth and professional from start to finish."</p>
+          <h4>Brian M.</h4>
+          <span>Nairobi, Kenya</span>
+        </article>
+        <article class="testimonial-card reveal">
+          <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+          <p>"Our group tour to Qatar was well organized with excellent hotel arrangements. Highly recommended for corporate travel."</p>
+          <h4>Aisha K.</h4>
+          <span>Doha, Qatar</span>
+        </article>
+        <article class="testimonial-card reveal">
+          <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+          <p>"They supported my jobs abroad application and travel documentation. Very helpful team and fast communication."</p>
+          <h4>James O.</h4>
+          <span>Kampala, Uganda</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="contact-section" id="contact">
+    <div class="container">
+      <h2 class="section-title reveal">Contact Us</h2>
+      <p class="section-subtitle reveal">Let’s plan your next destination with confidence and comfort.</p>
+      <div class="contact-wrap">
+        <div class="contact-info reveal">
+          <h3 style="margin-bottom: 14px; color: var(--dark);">Get in Touch</h3>
+          <div class="info-item"><i class="fa-solid fa-location-dot"></i><span>Algore Charter Travels, East Africa & Middle East</span></div>
+          <div class="info-item"><i class="fa-solid fa-user-tie"></i><span>Director: Mr. Joe Bakari</span></div>
+          <div class="info-item"><i class="fa-solid fa-phone"></i><span>Kenya: +254700070014 | +97433686108</span></div>
+          <div class="info-item"><i class="fa-solid fa-phone-volume"></i><span>Office: +254 700 070 014 | +974 7470 3290 | +254 101 070 014</span></div>
+          <div class="info-item"><i class="fa-solid fa-envelope"></i><span>algorechartertravels@gmail.com</span></div>
+          <div class="info-item"><i class="fa-solid fa-clock"></i><span>Mon - Sat: 8:00 AM - 7:00 PM</span></div>
+        </div>
+
+        <div class="contact-form reveal">
+          <form id="contactForm" action="#" method="post" novalidate>
+            <input type="text" name="name" id="name" placeholder="Your Name" required>
+            <input type="email" name="email" id="email" placeholder="Your Email" required>
+            <textarea name="message" id="message" placeholder="Tell us where you want to go..." required></textarea>
+            <button type="submit" class="btn"><i class="fa-solid fa-paper-plane"></i> Send Message</button>
+            <p class="form-success" id="formSuccess">Thank you! Your message has been sent successfully.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h4>Algore Charter Travels</h4>
+          <p>Dreams Are Possible. We provide trusted tours, charter flights, visa support and global travel services with elegant professional care.</p>
+          <div class="socials">
+            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
+          </div>
+        </div>
+        <div>
+          <h4>Quick Links</h4>
+          <p><a href="#home">Home</a></p>
+          <p><a href="#services">Services</a></p>
+          <p><a href="#recruitment">Recruitment</a></p>
+          <p><a href="#countries">Countries</a></p>
+          <p><a href="#job-categories">Job Categories</a></p>
+          <p><a href="#destinations">Destinations</a></p>
+          <p><a href="#contact">Contact</a></p>
+        </div>
+        <div>
+          <h4>Services</h4>
+          <p>Visa Applications</p>
+          <p>Hotel Booking</p>
+          <p>Flight Booking</p>
+          <p>Travel Insurance</p>
+          <p>Work Abroad Links</p>
+          <p>Recruitment Services</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        &copy; <span id="year"></span> Algore Charter Travels. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- WhatsApp Floating Button -->
+  <a class="whatsapp-float-btn" href="https://wa.me/254700070014" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+
+  <!-- Floating AI Chat Assistant -->
+  <button class="chat-toggle" id="chatToggle" aria-label="Open AI assistant">
+    <i class="fa-solid fa-robot"></i>
+  </button>
+
+  <aside class="chat-widget" id="chatWidget" aria-live="polite" aria-label="Algore AI Assistant">
+    <div class="chat-header">
+      <div class="chat-title">
+        <i class="fa-solid fa-robot"></i>
+        <span>Algore AI Assistant</span>
+      </div>
+      <button class="chat-close" id="chatClose" aria-label="Close chat">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
     </div>
 
-    <div>
-      <h3>Send Message</h3>
-      <form id="contactForm">
-        <input type="text" placeholder="Your Name" required>
-        <input type="email" placeholder="Email" required>
-        <textarea placeholder="Message" rows="3" required></textarea>
-        <button type="submit" class="btn">Send Message</button>
-      </form>
+    <div class="chat-messages" id="chatMessages">
+      <div class="msg bot">Hello! 👋 I’m Algore AI Assistant. I can help with tours, visas, flights, hotels, and recruitment opportunities abroad.</div>
     </div>
 
-    <div>
-      <h3>Social Media</h3>
-      <p>TikTok: Algore Charter Travels</p>
-      <p>Facebook: Algore Charter Travels</p>
-      <p>Instagram</p>
-      <p>YouTube</p>
-    </div>
+    <form class="chat-form" id="chatForm">
+      <input
+        type="text"
+        id="chatInput"
+        class="chat-input"
+        placeholder="Ask about tours, visas, jobs..."
+        autocomplete="off"
+        maxlength="1000"
+        required
+      />
+      <button type="submit" class="chat-send" aria-label="Send message">
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+    </form>
+    <p class="chat-note">For bookings, include destination, dates, number of travelers, and your contact number.</p>
+  </aside>
 
-    <div>
-      <h3>Algore Charter Travels</h3>
-      <p>Your trusted partner in travel, visas and jobs abroad.</p>
-    </div>
-  </div>
-</footer>
+  <button class="scroll-top" id="scrollTop" aria-label="Back to top"><i class="fa-solid fa-chevron-up"></i></button>
 
-<script>
-  // Form submission handling
-  document.getElementById('contactForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    alert('Thank you! Your message has been sent. We will contact you soon.');
-    this.reset();
-  });
+  <script>
+    // Hide preloader
+    window.addEventListener('load', () => {
+      const preloader = document.getElementById('preloader');
+      preloader.style.opacity = '0';
+      preloader.style.visibility = 'hidden';
+      setTimeout(() => preloader.remove(), 550);
+    });
 
-  // Smooth scroll for navigation links
-  document.querySelectorAll('nav a').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-      const href = this.getAttribute('href');
-      if (href.startsWith('#')) {
-        e.preventDefault();
-        const targetId = href.substring(1);
-        const targetElement = document.getElementById(targetId);
-        if (targetElement) {
-          window.scrollTo({
-            top: targetElement.offsetTop - 80,
-            behavior: 'smooth'
-          });
+    // Mobile nav toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    menuToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('show');
+      menuToggle.innerHTML = navLinks.classList.contains('show')
+        ? '<i class="fa-solid fa-xmark"></i>'
+        : '<i class="fa-solid fa-bars"></i>';
+    });
+
+    // Close mobile menu on link click
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('show');
+        menuToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+      });
+    });
+
+    // Active nav highlighting on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navAnchors = document.querySelectorAll('.nav-links a');
+    const setActiveLink = () => {
+      let current = 'home';
+      sections.forEach(section => {
+        const top = window.scrollY;
+        const offset = section.offsetTop - 110;
+        const height = section.offsetHeight;
+        if (top >= offset && top < offset + height) current = section.id;
+      });
+      navAnchors.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === `#${current}`);
+      });
+    };
+
+    // Scroll reveal animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('show');
+          observer.unobserve(entry.target);
         }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Contact form validation + success message
+    const contactForm = document.getElementById('contactForm');
+    const formSuccess = document.getElementById('formSuccess');
+    contactForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+      const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+      if (name.length < 2 || !validEmail || message.length < 10) {
+        formSuccess.classList.remove('show');
+        alert('Please enter a valid name, email, and a message of at least 10 characters.');
+        return;
+      }
+
+      formSuccess.classList.add('show');
+      contactForm.reset();
+    });
+
+    // Scroll to top button
+    const scrollTopBtn = document.getElementById('scrollTop');
+    window.addEventListener('scroll', () => {
+      setActiveLink();
+      if (window.scrollY > 280) scrollTopBtn.classList.add('show');
+      else scrollTopBtn.classList.remove('show');
+    });
+    scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    // ---------- Floating AI Chat Assistant ----------
+    // Keeps API key secure by calling backend route (/api/chat) instead of Blackbox directly.
+    const chatWidget = document.getElementById('chatWidget');
+    const chatToggle = document.getElementById('chatToggle');
+    const chatClose = document.getElementById('chatClose');
+    const chatForm = document.getElementById('chatForm');
+    const chatInput = document.getElementById('chatInput');
+    const chatMessages = document.getElementById('chatMessages');
+
+    const chatHistory = [];
+
+    const escapeHtml = (text) =>
+      text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+    const scrollChatToBottom = () => {
+      requestAnimationFrame(() => {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      });
+    };
+
+    const addMessage = (role, content) => {
+      const div = document.createElement('div');
+      div.className = `msg ${role === 'assistant' ? 'bot' : 'user'}`;
+      div.innerHTML = escapeHtml(content);
+      chatMessages.appendChild(div);
+      scrollChatToBottom();
+      return div;
+    };
+
+    const addTypingIndicator = () => {
+      const div = document.createElement('div');
+      div.className = 'msg bot';
+      div.id = 'typingIndicator';
+      div.innerHTML = '<span class="typing"><span></span><span></span><span></span></span>';
+      chatMessages.appendChild(div);
+      scrollChatToBottom();
+    };
+
+    const removeTypingIndicator = () => {
+      const typing = document.getElementById('typingIndicator');
+      if (typing) typing.remove();
+    };
+
+    const setChatOpen = (open) => {
+      chatWidget.classList.toggle('open', open);
+      chatToggle.style.opacity = open ? '0' : '1';
+      chatToggle.style.visibility = open ? 'hidden' : 'visible';
+      if (open) {
+        setTimeout(() => chatInput.focus(), 180);
+      }
+    };
+
+    chatToggle.addEventListener('click', () => setChatOpen(true));
+    chatClose.addEventListener('click', () => setChatOpen(false));
+
+    chatForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const message = chatInput.value.trim();
+      if (!message) return; // Prevent empty messages
+
+      addMessage('user', message);
+      chatHistory.push({ role: 'user', content: message });
+      chatInput.value = '';
+      addTypingIndicator();
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message,
+            history: chatHistory.slice(-10)
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Network/API error');
+        }
+
+        const data = await response.json();
+        const reply = (data && data.reply) ? data.reply : 'Sorry, I could not generate a response right now.';
+
+        removeTypingIndicator();
+        addMessage('assistant', reply);
+        chatHistory.push({ role: 'assistant', content: reply });
+      } catch (_err) {
+        removeTypingIndicator();
+        addMessage('assistant', 'Sorry, I’m temporarily unavailable due to a network issue. Please try again shortly or contact us at +254700070014.');
       }
     });
-  });
 
-  // Add active class to current section in navigation
-  window.addEventListener('scroll', function() {
-    let current = '';
-    const sections = document.querySelectorAll('section');
-    
-    sections.forEach(section => {
-      const sectionTop = section.offsetTop;
-      const sectionHeight = section.clientHeight;
-      if (scrollY >= (sectionTop - 100)) {
-        current = section.getAttribute('id');
-      }
-    });
-
-    document.querySelectorAll('nav a').forEach(link => {
-      link.classList.remove('active');
-      if (link.getAttribute('href') === '#' + current) {
-        link.classList.add('active');
-      }
-    });
-  });
-</script>
-
+    // Footer year
+    document.getElementById('year').textContent = new Date().getFullYear();
+    setActiveLink();
+  </script>
 </body>
 </html>
