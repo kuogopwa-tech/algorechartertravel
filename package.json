@@ -1,1 +1,1 @@
-{"name":"algore-charter-travels","version":"1.0.0","private":true,"description":"Algore Charter Travels website with secure Blackbox AI assistant","main":"server.js","scripts":{"dev":"node server.js","start":"node server.js"},"engines":{"node":">=18"},"dependencies":{"dotenv":"^16.4.5","express":"^4.19.2"}}
+{"name":"algore-charter-travels","version":"1.0.0","private":true,"description":"Algore Charter Travels website with secure Blackbox AI assistant","scripts":{"dev":"vercel dev","start":"vercel dev"},"engines":{"node":">=18"},"devDependencies":{"vercel":"^35.2.3"}}

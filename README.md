@@ -1,38 +1,63 @@
 # Algore Charter Travels Website + AI Assistant
 
-This project is a premium Tours, Travel, and Recruitment website with a secure floating AI chat assistant powered by Blackbox AI.
+Premium Tours, Travel, and Recruitment website with a secure floating AI assistant.
 
-## 1) Environment variables
-Create a local `.env` file in the project root (do **not** commit it):
+## Architecture (Vercel-ready)
+This project is configured for **static frontend + serverless backend**:
+
+- Frontend: `index.html`
+- Serverless API: `api/chat.js` and `api/health.js`
+- Shared AI logic: `lib/blackbox.js`
+- Vercel config: `vercel.json`
+
+✅ No permanent backend server is required.
+✅ No `server.listen()` runtime is used in production.
+
+---
+
+## 1) Environment Variables
+Create a local `.env` file in project root (do **not** commit it):
 
 ```env
 BLACKBOX_API_KEY=your_api_key
 BLACKBOX_MODEL=blackboxai/openai/gpt-5.3-codex
 BLACKBOX_BASE_URL=https://api.blackbox.ai
-PORT=3000
 ```
 
-A template file is included as `env.example`.
+Template included as `env.example`.
 
-## 2) Install dependencies
+> Note: In this environment, creating `.env.example` directly was restricted, so `env.example` is provided as the template.
+
+---
+
+## 2) Install Dependencies
 ```bash
 npm install
 ```
 
-## 3) Run locally
+---
+
+## 3) Local Testing (Vercel serverless)
+Run with Vercel dev server:
+
 ```bash
 npm run dev
 ```
+
 Open:
-- `http://localhost:3000`
+- `http://localhost:3000` (or the URL shown by Vercel CLI)
 
-## 4) Security notes
-- API key is used only on backend (`server.js` + `lib/blackbox.js`).
-- Frontend never exposes `BLACKBOX_API_KEY`.
+Health check:
+- `GET /api/health`
 
-## 5) API route
+Chat endpoint:
 - `POST /api/chat`
-- Body:
+
+---
+
+## 4) API Contract
+### `POST /api/chat`
+Request body:
 ```json
 {
   "message": "I want to book a trip to Qatar",
@@ -43,27 +68,43 @@ Open:
 }
 ```
 
-## 6) Deploy
+Response:
+```json
+{
+  "reply": "..."
+}
+```
 
-### Vercel
-1. Push repo to GitHub.
-2. Import project in Vercel.
-3. Add env vars in **Project Settings > Environment Variables**:
+---
+
+## 5) Security
+- `BLACKBOX_API_KEY` is read only in serverless function runtime.
+- Frontend calls `/api/chat` and never stores secrets.
+- Input is validated and empty messages are rejected.
+
+---
+
+## 6) Deploy to Vercel (Production)
+1. Push project to GitHub.
+2. Import the repo in Vercel.
+3. In **Project Settings → Environment Variables**, add:
    - `BLACKBOX_API_KEY`
    - `BLACKBOX_MODEL`
    - `BLACKBOX_BASE_URL`
-   - `PORT` (optional)
 4. Deploy.
 
-### Netlify
-Use Netlify with a Node backend (or separate backend service).
-1. Add environment variables in Site settings.
-2. Ensure Node server runtime is configured for backend endpoints.
-3. Deploy.
+That’s it — no VPS, no process manager, no custom backend hosting.
 
-> If using static-only Netlify hosting, host `server.js` API on another backend (Render/Railway/Fly.io) and update frontend fetch URL accordingly.
+---
 
-## 7) Production tips
-- Add request rate limiting for `/api/chat`.
-- Add logging/monitoring and error tracking.
-- Optionally add caching for repeated questions.
+## 7) Optional Netlify Note
+For full serverless parity, use Netlify Functions equivalent for `/api/chat`.
+Current setup is optimized for **Vercel serverless functions**.
+
+---
+
+## 8) Production Hardening (Recommended)
+- Add rate limiting / abuse protection to `/api/chat`
+- Add monitoring/logging for API errors
+- Add content moderation / guardrails if needed
+- Add caching for repeated FAQ prompts
