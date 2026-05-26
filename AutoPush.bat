@@ -1,21 +1,21 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
 
-REM Go to your project folder
+REM Go to project folder
 cd /d "C:\Users\TMK MEDIA SERVICES\algorechartertravel" || (
   echo [ERROR] Could not open project folder.
   pause
   exit /b 1
 )
 
-REM Ensure Git is available
+REM Ensure Git exists
 where git >nul 2>&1 || (
   echo [ERROR] Git is not installed or not in PATH.
   pause
   exit /b 1
 )
 
-REM Stage all changes (tracked + untracked, except ignored)
+REM Stage everything (tracked + untracked, except ignored)
 git add -A
 if errorlevel 1 (
   echo [ERROR] git add failed.
@@ -23,7 +23,7 @@ if errorlevel 1 (
   exit /b 1
 )
 
-REM If nothing staged, skip commit/push
+REM If nothing staged, exit gracefully
 git diff --cached --quiet
 if not errorlevel 1 (
   echo [INFO] No changes to commit.
@@ -31,10 +31,10 @@ if not errorlevel 1 (
   exit /b 0
 )
 
-REM Build safe timestamp for commit message
+REM Build timestamp safely via PowerShell
 for /f "usebackq delims=" %%i in (`powershell -NoProfile -Command "Get-Date -Format 'yyyy-MM-dd HH:mm:ss'"`) do set "TS=%%i"
 
-REM Commit changes
+REM Commit
 git commit -m "Auto commit - !TS!"
 if errorlevel 1 (
   echo [ERROR] git commit failed.

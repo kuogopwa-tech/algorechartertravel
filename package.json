@@ -1,1 +1,18 @@
-{"name":"algore-charter-travels","version":"1.0.0","private":true,"description":"Algore Charter Travels website with secure Blackbox AI assistant","scripts":{"dev":"vercel dev --listen 3000","dev:vercel":"vercel dev --listen 3000","start":"echo Vercel serverless project"},"engines":{"node":">=18"},"devDependencies":{"vercel":"^35.2.3"}}
+{
+  "name": "algore-charter-travels",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Algore Charter Travels website with secure Blackbox AI assistant",
+  "scripts": {
+    "dev": "node local-dev-server.js",
+    "dev:vercel": "vercel dev --listen 3000",
+    "build": "echo \"Static site with serverless /api functions\"",
+    "start": "vercel dev --listen 3000"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "vercel": "^35.2.3"
+  }
+}
