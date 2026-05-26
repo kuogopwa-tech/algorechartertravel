@@ -85,9 +85,10 @@ Response:
 ---
 
 ## 6) Scripts
-- `npm run dev` ? local static + `/api` testing (easy localhost workflow)
-- `npm run build` ? build placeholder for static + serverless deployment
-- `npm run start` ? run Vercel local runtime (`vercel dev`)
+- `npm run dev` -> local static + `/api` testing (easy localhost workflow)
+- `npm run dev:vercel` -> run Vercel local runtime (`vercel dev`)
+- `npm run build` -> build placeholder for static + serverless deployment
+- `npm run start` -> local static + `/api` testing via `local-dev-server.js`
 
 ---
 
@@ -100,7 +101,7 @@ Response:
    - `BLACKBOX_BASE_URL`
 4. Deploy.
 
-That’s it — no VPS, no process manager, no custom backend hosting.
+Thatï¿½s it ï¿½ no VPS, no process manager, no custom backend hosting.
 
 ---
 
@@ -110,8 +111,43 @@ Current setup is optimized for **Vercel serverless functions**.
 
 ---
 
-## 9) Production Hardening (Recommended)
-- Add rate limiting / abuse protection to `/api/chat`
+## 9) Deployment Diagnostics & Stabilization Checklist
+
+### Root causes of repeated instant (1-4s) Vercel failures
+1. **Invalid JavaScript tokens in API handlers**  
+   `api/chat.js`, `api/test.js`, and `api/health.js` had trailing invalid characters (`` `n `` artifacts), causing immediate parse errors before build/runtime setup.
+2. **Module-format instability risk**  
+   API handlers use `export default` while shared utility uses CommonJS (`require/module.exports`). This can be brittle in some setups, so the current repository is kept consistently compatible with its existing local runtime and Vercel Node serverless behavior.
+3. **Script/documentation mismatch**  
+   README script descriptions were inconsistent with `package.json`, causing confusion during local and Vercel-like validation workflows.
+
+### Verified Vercel compatibility state
+- `vercel.json` is minimal and modern:
+  - `functions.api/**/*.js.runtime = nodejs20.x`
+- API route files exist and are correctly structured:
+  - `/api/chat.js`
+  - `/api/test.js`
+  - `/api/health.js`
+- Each API file exports default handler:
+  - `export default async function handler(req, res) {}`
+- `package.json` contains Node engine:
+  - `"engines": { "node": "20.x" }`
+- No deprecated `builds`, `routes`, or legacy runtime blocks in `vercel.json`.
+
+### Pre-deploy checks
+- Validate JSON syntax:
+  - `package.json`
+  - `vercel.json`
+- Ensure no hidden Unicode or invalid trailing characters in API files.
+- Confirm required env vars in Vercel Project Settings:
+  - `BLACKBOX_API_KEY`
+  - `BLACKBOX_MODEL`
+  - `BLACKBOX_BASE_URL`
+- Confirm frontend is static (`index.html`) and does not rely on custom backend server in production.
+- Confirm `/api/health` and `/api/test` return success after deploy.
+
+## 10) Production Hardening (Recommended)
+- Keep rate limiting / abuse protection on `/api/chat`
 - Add monitoring/logging for API errors
 - Add content moderation / guardrails if needed
 - Add caching for repeated FAQ prompts
