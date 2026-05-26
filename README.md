@@ -1,4 +1,4 @@
-# Algore Charter Travels Website + AI Assistant
+﻿# Algore Charter Travels Website + AI Assistant
 
 Premium Tours, Travel, and Recruitment website with a secure floating AI assistant.
 
@@ -25,8 +25,6 @@ BLACKBOX_BASE_URL=https://api.blackbox.ai
 ```
 
 Template included as `env.example`.
-
-> Note: In this environment, creating `.env.example` directly was restricted, so `env.example` is provided as the template.
 
 ---
 
