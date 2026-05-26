@@ -5,14 +5,10 @@
   "description": "Algore Charter Travels website with secure Blackbox AI assistant",
   "scripts": {
     "dev": "node local-dev-server.js",
-    "dev:vercel": "vercel dev --listen 3000",
     "build": "echo \"Static site with serverless /api functions\"",
-    "start": "vercel dev --listen 3000"
+    "start": "node local-dev-server.js"
   },
   "engines": {
     "node": ">=18"
-  },
-  "devDependencies": {
-    "vercel": "^35.2.3"
   }
 }
