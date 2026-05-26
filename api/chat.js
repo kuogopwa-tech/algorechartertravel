@@ -68,7 +68,7 @@ function normalizeUserError(code) {
 }
 
 // Vercel Serverless Function: /api/chat
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Method Not Allowed" });
@@ -141,5 +141,4 @@ module.exports = async (req, res) => {
     return res.status(500).json({
       error: normalizeUserError(error?.message),
     });
-  }
-};
+  }`n}`n
