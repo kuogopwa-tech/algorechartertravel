@@ -95,13 +95,23 @@ Response:
 ## 7) Deploy to Vercel (Production)
 1. Push project to GitHub.
 2. Import the repo in Vercel.
-3. In **Project Settings ? Environment Variables**, add:
+3. In **Project Settings -> Build & Output Settings** set:
+   - **Framework Preset:** `Other`
+   - **Root Directory:** repository root
+   - **Output Directory:** **leave empty**
+   - **Install Command:** default
+   - **Build Command:** default (or keep `npm run build` as static placeholder)
+4. In **Project Settings -> Environment Variables**, add:
    - `BLACKBOX_API_KEY`
    - `BLACKBOX_MODEL`
    - `BLACKBOX_BASE_URL`
-4. Deploy.
+5. Deploy.
 
-That�s it � no VPS, no process manager, no custom backend hosting.
+That’s it — no VPS, no process manager, no custom backend hosting.
+
+### Why “No Output Directory named 'public' found” happened
+That error is caused by Vercel dashboard config expecting a framework-style build output folder (`public`) that does not exist in this repo.  
+This project serves `index.html` directly from repository root and uses `/api/*.js` serverless functions, so **Output Directory must be empty**.
 
 ---
 
