@@ -885,6 +885,61 @@
       background: #fff;
     }
 
+    .chat-status {
+      padding: 8px 10px;
+      font-size: .8rem;
+      border-top: 1px solid #e8edf6;
+      background: #fff;
+      color: var(--muted);
+    }
+
+    .chat-status.offline {
+      color: #a63d2f;
+      background: #fff4f2;
+    }
+
+    .chat-error {
+      margin: 8px 10px 0;
+      padding: 9px 10px;
+      border: 1px solid #f2c6c0;
+      border-radius: 10px;
+      background: #fff6f5;
+      color: #a63d2f;
+      font-size: .82rem;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .chat-error.show {
+      display: flex;
+    }
+
+    .chat-retry {
+      border: 0;
+      border-radius: 8px;
+      padding: 6px 9px;
+      font-size: .75rem;
+      background: #a63d2f;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .chat-send .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      display: inline-block;
+      animation: spin .8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
     .chat-suggestions {
       display: flex;
       flex-wrap: wrap;
@@ -1356,6 +1411,11 @@
       <div class="msg bot" id="initialBotMessage"></div>
     </div>
 
+    <div class="chat-error" id="chatError">
+      <span id="chatErrorText">Network error.</span>
+      <button type="button" class="chat-retry" id="chatRetryBtn">Retry</button>
+    </div>
+
     <form class="chat-form" id="chatForm">
       <input
         type="text"
@@ -1377,6 +1437,7 @@
       <button type="button" class="chat-suggestion">Book a safari</button>
     </div>
     <p class="chat-note">For quick booking support, include destination, travel dates, number of travelers, and your phone number.</p>
+    <div class="chat-status" id="chatStatus">Online</div>
   </aside>
 
   <button class="scroll-top" id="scrollTop" aria-label="Back to top"><i class="fa-solid fa-chevron-up"></i></button>
@@ -1474,6 +1535,10 @@
     const chatInput = document.getElementById('chatInput');
     const chatMessages = document.getElementById('chatMessages');
     const chatSuggestions = document.querySelectorAll('.chat-suggestion');
+    const chatStatus = document.getElementById('chatStatus');
+    const chatError = document.getElementById('chatError');
+    const chatErrorText = document.getElementById('chatErrorText');
+    const chatRetryBtn = document.getElementById('chatRetryBtn');
 
     const chatHistory = [];
 
@@ -1539,6 +1604,23 @@
 
     let isSending = false;
     let lastSent = { text: '', at: 0 };
+    let lastFailedMessage = '';
+
+    const updateOnlineState = () => {
+      const online = navigator.onLine;
+      chatStatus.textContent = online ? 'Online' : 'Offline: check your internet connection';
+      chatStatus.classList.toggle('offline', !online);
+    };
+
+    const hideChatError = () => {
+      chatError.classList.remove('show');
+      chatErrorText.textContent = '';
+    };
+
+    const showChatError = (message) => {
+      chatErrorText.textContent = message || 'Network/API error';
+      chatError.classList.add('show');
+    };
 
     const setBusyState = (busy) => {
       isSending = busy;
@@ -1546,7 +1628,12 @@
       chatForm.setAttribute('aria-busy', busy ? 'true' : 'false');
       chatInput.disabled = busy;
       const sendBtn = chatForm.querySelector('.chat-send');
-      if (sendBtn) sendBtn.disabled = busy;
+      if (sendBtn) {
+        sendBtn.disabled = busy;
+        sendBtn.innerHTML = busy
+          ? '<span class="spinner" aria-hidden="true"></span>'
+          : '<i class="fa-solid fa-paper-plane"></i>';
+      }
     };
 
     const sendChatMessage = async (rawMessage) => {
@@ -1557,6 +1644,13 @@
       const now = Date.now();
       if (message === lastSent.text && (now - lastSent.at) < 1200) return; // Basic duplicate/spam protection
       lastSent = { text: message, at: now };
+
+      hideChatError();
+
+      if (!navigator.onLine) {
+        showChatError('You are offline. Reconnect and retry.');
+        return;
+      }
 
       addMessage('user', message);
       chatHistory.push({ role: 'user', content: message });
@@ -1600,17 +1694,33 @@
         });
 
         if (!response.ok) {
-          const serverMsg = data && data.error ? data.error : 'Network/API error';
+          const serverMsg = data && data.error
+            ? (data.error.message || data.error)
+            : (data && data.message ? data.message : 'Network/API error');
           throw new Error(serverMsg);
         }
 
-        const reply = (data && data.reply) ? data.reply : 'Sorry, I could not generate a response right now.';
+        if (data && data.ok === false) {
+          const controlledMessage = (data.error && data.error.message)
+            ? data.error.message
+            : (data.message || 'Sorry, I could not process your request right now.');
+          addMessage('assistant', controlledMessage);
+          chatHistory.push({ role: 'assistant', content: controlledMessage });
+          return;
+        }
+
+        const reply = (data && (data.answer || data.reply))
+          ? (data.answer || data.reply)
+          : 'Sorry, I could not generate a response right now.';
         addMessage('assistant', reply);
         chatHistory.push({ role: 'assistant', content: reply });
-  } catch (err) {
+      } catch (err) {
         debugError('[Chat] Fetch failure', err);
         const fallback = 'Our travel assistant is temporarily unavailable. Please try again shortly, use WhatsApp, or call +254700070014.';
-        addMessage('assistant', (err && err.message) ? err.message : fallback);
+        const errorMessage = (err && err.message) ? err.message : fallback;
+        showChatError(errorMessage);
+        addMessage('assistant', errorMessage);
+        lastFailedMessage = message;
       } finally {
         removeTypingIndicator();
         setBusyState(false);
@@ -1622,6 +1732,23 @@
       e.preventDefault();
       await sendChatMessage(chatInput.value);
     });
+
+    chatRetryBtn.addEventListener('click', async () => {
+      if (!lastFailedMessage || isSending) return;
+      await sendChatMessage(lastFailedMessage);
+    });
+
+    window.addEventListener('online', () => {
+      updateOnlineState();
+      hideChatError();
+    });
+
+    window.addEventListener('offline', () => {
+      updateOnlineState();
+      showChatError('You are offline. Reconnect and retry.');
+    });
+
+    updateOnlineState();
 
     chatSuggestions.forEach((btn) => {
       btn.addEventListener('click', async () => {

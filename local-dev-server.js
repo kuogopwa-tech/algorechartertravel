@@ -1,6 +1,7 @@
 const http = require("node:http");
 const fs = require("node:fs");
 const path = require("node:path");
+const { pathToFileURL } = require("node:url");
 
 const projectRoot = __dirname;
 const apiDir = path.join(projectRoot, "api");
@@ -93,8 +94,24 @@ async function handleApi(req, res) {
   }
 
   try {
-    delete require.cache[require.resolve(handlerPath)];
-    const mod = require(handlerPath);
+    const chunks = [];
+    for await (const chunk of req) {
+      chunks.push(chunk);
+    }
+
+    const rawBody = Buffer.concat(chunks).toString("utf8").trim();
+    if (rawBody) {
+      try {
+        req.body = JSON.parse(rawBody);
+      } catch {
+        req.body = undefined;
+      }
+    } else {
+      req.body = {};
+    }
+
+    const handlerUrl = `${pathToFileURL(handlerPath).href}?t=${Date.now()}`;
+    const mod = await import(handlerUrl);
     const handler = typeof mod === "function" ? mod : mod?.default;
     const localRes = createLocalRes(res);
 
@@ -103,9 +120,15 @@ async function handleApi(req, res) {
     }
 
     await handler(req, localRes);
+
+    if (!res.writableEnded) {
+      sendJson(res, 500, { error: "Handler did not send a response" });
+    }
   } catch (error) {
     console.error("[local-dev-server] API error", error);
-    sendJson(res, 500, { error: "Internal Server Error" });
+    if (!res.writableEnded) {
+      sendJson(res, 500, { error: "Internal Server Error" });
+    }
   }
 }
 
