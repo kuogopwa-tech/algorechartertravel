@@ -1,4 +1,4 @@
-const { callBlackboxAI } = require("../lib/blackbox");
+import { callBlackboxAI } from "../lib/blackbox.js";
 
 const IS_PROD = process.env.NODE_ENV === "production";
 const RATE_WINDOW_MS = 60 * 1000;

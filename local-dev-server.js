@@ -94,8 +94,13 @@ async function handleApi(req, res) {
 
   try {
     delete require.cache[require.resolve(handlerPath)];
-    const handler = require(handlerPath);
+    const mod = require(handlerPath);
+    const handler = typeof mod === "function" ? mod : mod?.default;
     const localRes = createLocalRes(res);
+
+    if (typeof handler !== "function") {
+      throw new TypeError(`API handler is not a function for route: ${routeName}`);
+    }
 
     await handler(req, localRes);
   } catch (error) {
