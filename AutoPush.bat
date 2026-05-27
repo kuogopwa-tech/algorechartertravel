@@ -15,13 +15,16 @@ where git >nul 2>&1 || (
   exit /b 1
 )
 
-REM Stage everything (tracked + untracked, except ignored)
-git add -A
+REM Stage everything (tracked + untracked + ignored)
+git add -A -f
 if errorlevel 1 (
   echo [ERROR] git add failed.
   pause
   exit /b 1
 )
+
+REM Always keep env secrets out of commits
+git reset --quiet -- .env .env.* >nul 2>&1
 
 REM If nothing staged, exit gracefully
 git diff --cached --quiet
