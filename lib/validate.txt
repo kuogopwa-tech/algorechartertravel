@@ -1,6 +1,4 @@
-// validate.js
 import { createAppError } from "./errors.js";
-import { travelKeywords } from "./travelKeywords.js";
 
 const ROLE_ALLOWED = new Set(["user", "assistant"]);
 const MAX_MESSAGE_LENGTH = 1000;
@@ -22,58 +20,61 @@ const BLOCK_PATTERNS = [
 ];
 
 const GREETING_PATTERNS = [
-  /\bhi+\b/i, /\bhello+\b/i, /\bhey+\b/i, /\bgood\s+morning\b/i,
-  /\bgood\s+afternoon\b/i, /\bgood\s+evening\b/i, /\bhabari\b/i,
-  /\bmambo\b/i, /\bniaje\b/i, /\bsasa\b/i, /\bhow\s+are\s+you\b/i,
-  /\bgreetings?\b/i, /^salut$/i, /^bonjour$/i, /^hola$/i, /^hallo$/i
+  /\bhi+\b/i,
+  /\bhello+\b/i,
+  /\bhey+\b/i,
+  /\bgood\s+morning\b/i,
+  /\bgood\s+afternoon\b/i,
+  /\bgood\s+evening\b/i,
+  /\bhabari\b/i,
+  /\bmambo\b/i,
+  /\bniaje\b/i,
+  /\bsasa\b/i,
+  /\bhow\s+are\s+you\b/i,
+  /\bgreetings?\b/i
 ];
 
-const LANGUAGE_PATTERNS = {
-  sw: /(habari|mambo|niaje|sasa|safari|asante|tafadhali|ndiyo|hapana|kwaheri|jambo|poa|sawa|nataka|kwenda)/i,
-  fr: /\b(bonjour|merci|comment|pourquoi|oui|non|voyage)\b/i,
-  es: /\b(hola|gracias|cómo|por qué|sí|no|viaje)\b/i,
-  ar: /[\u0600-\u06FF]/,
-  en: /\b(the|hello|thanks|please|yes|no|travel|visa|flight|help)\b/i
-};
+const DOMAIN_PATTERNS = [
+  /\btravel\b/i,
+  /\btrip(s)?\b/i,
+  /\bholiday\b/i,
+  /\bpackage(s)?\b/i,
+  /\bdubai\b/i,
+  /\bvisa\b/i,
+  /\bhotel\b/i,
+  /\bflight(s)?\b/i,
+  /\bsafari\b/i,
+  /\brecruitment\b/i,
+  /\bjobs?\b/i,
+  /\bbooking\b/i,
+  /\btours?\b/i,
+  /\bcharter\b/i,
+  /\binsurance\b/i,
+  /\bmombasa\b/i,
+  /\bdiani\b/i,
+  /\bzanzibar\b/i,
+  /\bmalindi\b/i,
+  /\bbeach\b/i,
+  /\bgetaway\b/i,
+  /\bvacation\b/i,
+  /\bdestination(s)?\b/i,
+  /\bqatar\b/i,
+  /\buae\b/i,
+  /\bgulf\b/i,
+  /\bwork abroad\b/i
+];
 
-// Consolidated travel check function - NO 'export' keyword here since it's in the bottom export block
-function isTravelRelated(message) {
-  if (!message || typeof message !== 'string') return false;
-  const lowerMsg = message.toLowerCase();
-  
-  // Direct matches for common short responses
-  const directMatches = ['luxury', 'mid-range', 'budget', 'premium', 'standard', 'economy',
-                         'ok', 'okay', 'sawa', 'poa', 'yes', 'ndiyo', 'no', 'hapana',
-                         'hehe', 'haha', 'lol', 'nice', 'great', 'good', 'fine'];
-  if (directMatches.includes(lowerMsg)) return true;
-  
-  // Check numbers (e.g., "3", "5 days")
-  if (lowerMsg.match(/^\d+$/) || lowerMsg.match(/^\d+\s*(day|days|night|nights)$/i)) return true;
-  
-  // Check against keyword list
-  return travelKeywords.some(keyword => lowerMsg.includes(keyword));
-}
-
-function detectLanguage(text) {
-  if (typeof text !== "string") return "en";
-  
-  const scores = {};
-  for (const [lang, pattern] of Object.entries(LANGUAGE_PATTERNS)) {
-    const matches = (text.match(pattern) || []).length;
-    if (matches > 0) scores[lang] = matches;
-  }
-  
-  let bestLang = "en";
-  let bestScore = 0;
-  for (const [lang, score] of Object.entries(scores)) {
-    if (score > bestScore) {
-      bestScore = score;
-      bestLang = lang;
-    }
-  }
-  
-  return bestLang;
-}
+const HARD_BLOCK_PATTERNS = [
+  /\bfootball\b/i,
+  /\bmatch\s*score(s)?\b/i,
+  /\bpremier\s*league\b/i,
+  /\bcode|coding|javascript|python|react|api\b/i,
+  /\bhack(ing)?\b/i,
+  /\bcrack\b/i,
+  /\bmalware\b/i,
+  /\bporn|sex\b/i,
+  /\bpolitics?|election\b/i
+];
 
 async function parseJsonBody(req) {
   if (req.body && typeof req.body === "object") return req.body;
@@ -130,12 +131,35 @@ function isGreetingMessage(text) {
 }
 
 function assertDomainAllowed(text) {
-  return;
+  const isGreeting = isGreetingMessage(text);
+  const isDomainMessage = DOMAIN_PATTERNS.some((p) => p.test(text));
+  const isHardBlocked = HARD_BLOCK_PATTERNS.some((p) => p.test(text));
+
+  // Softer filtering: only block clearly unrelated categories.
+  if (isHardBlocked) {
+    throw createAppError("non_domain_request");
+  }
+
+  // Allow greetings and short conversational follow-ups by default.
+  // Domain context is still enforced by system prompt + business scope in assistant logic.
+  if (isGreeting || isDomainMessage) return;
 }
+
+
 
 function ensureWebGroundedResponse(text) {
   const hasUrl = /https?:\/\/[^\s)]+/i.test(text);
   if (!hasUrl) {
+    throw createAppError("unverified_response");
+  }
+
+  const fakeSourceClaims = [
+    /\bsource:\s*(none|n\/a|na)\b/i,
+    /\bcitation:\s*(none|n\/a|na)\b/i,
+    /\baccording to reliable sources\b(?!.*https?:\/\/)/i
+  ];
+
+  if (fakeSourceClaims.some((p) => p.test(text))) {
     throw createAppError("unverified_response");
   }
 }
@@ -145,10 +169,8 @@ export {
   validateMethod,
   validateMessageInput,
   validateHistory,
-  assertNoPromptInjection,
+    assertNoPromptInjection,
   assertDomainAllowed,
   isGreetingMessage,
-  ensureWebGroundedResponse,
-  detectLanguage,
-  isTravelRelated
+  ensureWebGroundedResponse
 };
