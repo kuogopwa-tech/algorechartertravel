@@ -20,7 +20,9 @@ export default async function handler(req, res) {
       ctx.requestId,
       {
         service: "Algore Charter Travels AI API",
-        status: "ok"
+        status: "ok",
+        provider: "gemini",
+        geminiConfigured: !!process.env.GEMINI_API_KEY
       },
       200
     );

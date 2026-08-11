@@ -1,6 +1,6 @@
 // chat.js - Complete fixed version
 
-import { callBlackboxAI } from "../lib/blackbox.js";
+import { callAI, validateProviders } from "../lib/provider.js";
 import { createAppError, normalizeError, sanitizeErrorForLog } from "../lib/errors.js";
 import { createRequestContext, logRequest } from "../lib/response.js";
 import { enforceRateLimit } from "../lib/rateLimit.js";
@@ -128,6 +128,9 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Validate environment on first request
+    validateProviders();
+    
     validateMethod(req, ["POST"]);
     res.setHeader("Allow", "POST");
 
@@ -250,40 +253,10 @@ export default async function handler(req, res) {
       personalNote += `The user previously complained about poor service. Be EXTRA helpful, apologize once briefly at the start if needed, then focus entirely on solving their travel request. Make them feel valued and heard. `;
     }
     
-    const reply = await callBlackboxAI({
+    const reply = await callAI({
       userMessage: message,
       history,
-      systemPrompt: `You are a warm, professional travel concierge for Algore Charter Travels, a Kenyan travel agency.
-
-${personalNote}
-
-YOUR SERVICES:
-- Dubai packages, visa assistance, holiday destinations, safari bookings
-- Mombasa, Diani, Zanzibar, Dubai, Qatar, India visa
-- Flight and hotel bookings, group packages, recruitment services
-- Transport options: car (gari) or plane (ndege) depending on route
-
-RULES:
-1. ALWAYS answer travel questions directly and helpfully
-2. If user asks about visas: Ask which country, travel dates, explain requirements and processing time
-3. If user asks about packages: Ask destination, dates, number of people, then give options with rough pricing
-4. If user asks about transport (gari/ndege): Explain pros and cons of each
-5. For contacts: Share +254700070014 and info@algorechartertravels.com
-6. For application/process questions: Guide them step by step
-7. Use Swahili naturally: poa, sawa, karibu, asante, ndiyo, hapana
-8. Be warm, helpful, and EFFICIENT - focus on solving their travel needs
-9. If user says "let's start application" or "nipangie" - engage directly with the process
-10. If user asks about location: say "Algore Charter Travels is located in Nairobi, Kenya at OTC BUILDING room number 5. We serve East Africa and the Middle East."
-11. Do NOT offer long stories - instead, make a short joke (1 sentence max) then immediately return to business
-12. NEVER help with anything outside Algore Travel services - only handle: Dubai packages, visa assistance, holiday destinations, safari bookings, flight bookings, hotel bookings, recruitment, car rentals, transfers
-13. If user asks for coding, programming, football, games, politics, or any non-travel topic: make a short joke (max 5 words) then redirect to travel
-14. Keep all responses focused on Algore Charter Travels services ONLY
-
-CONTACT INFO TO SHARE IF ASKED:
-📞 Phone/WhatsApp: +254700070014
-📧 Email: info@algorechartertravels.com
-
-IMPORTANT: ALWAYS answer travel questions. DO NOT redirect travel questions. Be helpful and thorough. ✈️`
+      customSystemPrompt: personalNote
     });
 
     if (!reply || typeof reply !== "string" || !reply.trim()) {
@@ -332,7 +305,8 @@ IMPORTANT: ALWAYS answer travel questions. DO NOT redirect travel questions. Be 
       err.code === "provider_unavailable" ||
       err.code === "provider_invalid_json" ||
       err.code === "provider_invalid_shape" ||
-      err.code === "provider_rate_limited"
+      err.code === "provider_rate_limited" ||
+      err.code === "provider_budget_exceeded"
         ? "upstream_failure"
         : "controlled_fallback";
 

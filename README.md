@@ -7,7 +7,7 @@ This project is configured for **static frontend + serverless backend**:
 
 - Frontend: `index.html`
 - Serverless API: `api/chat.js` and `api/health.js`
-- Shared AI logic: `lib/blackbox.js`
+- Shared AI logic: `lib/gemini.js`
 - Vercel config: `vercel.json`
 
 ? No permanent backend server is required.
@@ -19,9 +19,8 @@ This project is configured for **static frontend + serverless backend**:
 Create a local `.env` file in project root (do **not** commit it):
 
 ```env
-BLACKBOX_API_KEY=your_api_key
-BLACKBOX_MODEL=blackboxai/openai/gpt-5.3-codex
-BLACKBOX_BASE_URL=https://api.blackbox.ai
+GEMINI_API_KEY=your_gemini_key
+GEMINI_MODEL=gemini-flash-latest
 ```
 
 Template included as `.env.example`.
@@ -36,13 +35,17 @@ npm install
 ---
 
 ## 3) Local Development Workflow
-Run local static + API testing:
+Run local static + API testing automatically:
 
+**Windows (Recommended):**
+Double-click `StartProject.bat` in the project root. This will:
+1. Start the local server.
+2. Automatically open the website in your browser.
+
+**Manual Command:**
 ```bash
 npm run dev
 ```
-
-This starts `local-dev-server.js`, serves `index.html`, and proxies `/api/*` to the same handlers used in production.
 
 Open:
 - `http://localhost:3000`
@@ -78,7 +81,7 @@ Response:
 ---
 
 ## 5) Security
-- `BLACKBOX_API_KEY` is read only in serverless function runtime.
+- `GEMINI_API_KEY` is read only in serverless function runtime.
 - Frontend calls `/api/chat` and never stores secrets.
 - Input is validated and empty messages are rejected.
 
@@ -102,9 +105,8 @@ Response:
    - **Install Command:** default
    - **Build Command:** default (or keep `npm run build` as static placeholder)
 4. In **Project Settings -> Environment Variables**, add:
-   - `BLACKBOX_API_KEY`
-   - `BLACKBOX_MODEL`
-   - `BLACKBOX_BASE_URL`
+   - `GEMINI_API_KEY`
+   - `GEMINI_MODEL`
 5. Deploy.
 
 That’s it — no VPS, no process manager, no custom backend hosting.
@@ -150,9 +152,7 @@ Current setup is optimized for **Vercel serverless functions**.
   - `vercel.json`
 - Ensure no hidden Unicode or invalid trailing characters in API files.
 - Confirm required env vars in Vercel Project Settings:
-  - `BLACKBOX_API_KEY`
-  - `BLACKBOX_MODEL`
-  - `BLACKBOX_BASE_URL`
+  - `GEMINI_API_KEY`
 - Confirm frontend is static (`index.html`) and does not rely on custom backend server in production.
 - Confirm `/api/health` and `/api/test` return success after deploy.
 
@@ -161,4 +161,3 @@ Current setup is optimized for **Vercel serverless functions**.
 - Add monitoring/logging for API errors
 - Add content moderation / guardrails if needed
 - Add caching for repeated FAQ prompts
-

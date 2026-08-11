@@ -7,6 +7,11 @@ const projectRoot = __dirname;
 const apiDir = path.join(projectRoot, "api");
 const port = Number(process.env.PORT || 3000);
 
+function openBrowser(url) {
+  const start = (process.platform === 'darwin' ? 'open' : process.platform === 'win32' ? 'start' : 'xdg-open');
+  require('child_process').exec(`${start} ${url}`);
+}
+
 function loadEnvFile() {
   const envPath = path.join(projectRoot, ".env");
   if (!fs.existsSync(envPath)) return;
@@ -22,7 +27,7 @@ function loadEnvFile() {
     const key = trimmed.slice(0, eqIndex).trim();
     const value = trimmed.slice(eqIndex + 1).trim();
 
-    if (key && process.env[key] === undefined) {
+    if (key) {
       process.env[key] = value;
     }
   }
@@ -111,6 +116,7 @@ async function handleApi(req, res) {
     }
 
     const handlerUrl = `${pathToFileURL(handlerPath).href}?t=${Date.now()}`;
+    console.log("[DEBUG] Loading handler from:", handlerUrl);
     const mod = await import(handlerUrl);
     const handler = typeof mod === "function" ? mod : mod?.default;
     const localRes = createLocalRes(res);
@@ -149,5 +155,10 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(port, () => {
-  console.log(`Local dev server running at http://localhost:${port}`);
+  const url = `http://localhost:${port}`;
+  console.log(`Local dev server running at ${url}`);
+  
+  if (process.argv.includes("--open")) {
+    openBrowser(url);
+  }
 });

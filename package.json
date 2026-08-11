@@ -5,12 +5,15 @@
   "type": "module",
   "description": "Algore Charter Travels website with secure AI assistant",
   "scripts": {
-    "dev": "node local-dev-server.cjs",
+    "dev": "node local-dev-server.cjs --open",
     "dev:vercel": "vercel dev",
     "build": "echo \"Static site with serverless /api functions\"",
     "start": "node local-dev-server.cjs"
   },
   "engines": {
     "node": "20.x"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1"
   }
 }

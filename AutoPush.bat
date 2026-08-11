@@ -15,8 +15,8 @@ where git >nul 2>&1 || (
   exit /b 1
 )
 
-REM Stage everything (tracked + untracked + ignored)
-git add -A -f
+REM Stage tracked and untracked files, respecting .gitignore
+git add -A
 if errorlevel 1 (
   echo [ERROR] git add failed.
   pause
