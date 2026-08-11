@@ -1718,9 +1718,13 @@
       speechRecognition.onerror = (event) => {
         setListeningState(false);
         if (event.error !== 'aborted') {
-          showChatError(event.error === 'not-allowed'
-            ? 'Microphone access was denied. You can still type your message.'
-            : 'Voice input was not available. Please try again or type your message.');
+          const voiceErrors = {
+            'not-allowed': 'Microphone access was denied. Allow microphone access and try again.',
+            'service-not-allowed': 'Voice input is unavailable in this embedded browser. Open the site in Chrome or Edge and try again.',
+            network: 'Voice service could not connect. Check your internet connection and try again.',
+            'audio-capture': 'No microphone was detected. Connect a microphone and try again.'
+          };
+          showChatError(voiceErrors[event.error] || `Voice input failed (${event.error || 'unknown error'}). Please type your message.`);
         }
       };
       speechRecognition.onend = () => setListeningState(false);
