@@ -826,7 +826,7 @@
 
     .chat-form {
       display: grid;
-      grid-template-columns: 1fr auto;
+      grid-template-columns: 1fr auto auto;
       gap: 8px;
       padding: 10px;
       border-top: 1px solid #e8edf6;
@@ -851,6 +851,31 @@
       color: #fff;
       cursor: pointer;
       transition: var(--transition);
+    }
+
+    .chat-voice {
+      border: 1px solid #dbe2f1;
+      border-radius: 10px;
+      width: 42px;
+      background: #f7f9fc;
+      color: var(--primary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .chat-voice:hover,
+    .chat-voice.listening {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .chat-voice.listening {
+      animation: pulse 1.4s infinite;
+    }
+
+    .chat-voice:disabled {
+      opacity: .55;
+      cursor: not-allowed;
     }
 
     .chat-send:disabled {
@@ -1536,6 +1561,9 @@
       <button type="submit" class="chat-send" aria-label="Send message">
         <i class="fa-solid fa-paper-plane"></i>
       </button>
+      <button type="button" class="chat-voice" id="chatVoice" aria-label="Speak your message" title="Speak your message">
+        <i class="fa-solid fa-microphone"></i>
+      </button>
     </form>
     <div class="chat-suggestions" aria-label="Quick suggestions">
       <button type="button" class="chat-suggestion">Best Dubai packages</button>
@@ -1640,6 +1668,7 @@
     const chatClose = document.getElementById('chatClose');
     const chatForm = document.getElementById('chatForm');
     const chatInput = document.getElementById('chatInput');
+    const chatVoice = document.getElementById('chatVoice');
     const chatMessages = document.getElementById('chatMessages');
     const chatSuggestions = document.querySelectorAll('.chat-suggestion');
     const chatStatus = document.getElementById('chatStatus');
@@ -1648,6 +1677,67 @@
     const chatRetryBtn = document.getElementById('chatRetryBtn');
 
     const chatHistory = [];
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const speechRecognition = SpeechRecognition ? new SpeechRecognition() : null;
+    let isListening = false;
+    let speechBaseValue = '';
+
+    const speakReply = (text) => {
+      if (!('speechSynthesis' in window) || !text) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = document.documentElement.lang || 'en-US';
+      utterance.rate = 0.95;
+      utterance.pitch = 1;
+      window.speechSynthesis.speak(utterance);
+    };
+
+    const setListeningState = (listening) => {
+      isListening = listening;
+      chatVoice.classList.toggle('listening', listening);
+      chatVoice.setAttribute('aria-pressed', String(listening));
+      chatVoice.title = listening ? 'Stop listening' : 'Speak your message';
+      chatVoice.innerHTML = listening
+        ? '<i class="fa-solid fa-stop"></i>'
+        : '<i class="fa-solid fa-microphone"></i>';
+      if (listening) chatStatus.textContent = 'Listening... speak now';
+      else updateOnlineState();
+    };
+
+    if (speechRecognition) {
+      speechRecognition.continuous = false;
+      speechRecognition.interimResults = true;
+      speechRecognition.lang = 'en-US';
+      speechRecognition.onstart = () => setListeningState(true);
+      speechRecognition.onresult = (event) => {
+        const transcript = Array.from(event.results)
+          .map(result => result[0].transcript)
+          .join('');
+        chatInput.value = `${speechBaseValue}${transcript}`.trimStart();
+      };
+      speechRecognition.onerror = (event) => {
+        setListeningState(false);
+        if (event.error !== 'aborted') {
+          showChatError(event.error === 'not-allowed'
+            ? 'Microphone access was denied. You can still type your message.'
+            : 'Voice input was not available. Please try again or type your message.');
+        }
+      };
+      speechRecognition.onend = () => setListeningState(false);
+      chatVoice.addEventListener('click', () => {
+        if (isListening) {
+          speechRecognition.stop();
+          return;
+        }
+        hideChatError();
+        speechBaseValue = chatInput.value ? `${chatInput.value.trim()} ` : '';
+        speechRecognition.start();
+      });
+    } else {
+      chatVoice.disabled = true;
+      chatVoice.title = 'Voice input is not supported in this browser';
+      chatVoice.setAttribute('aria-label', 'Voice input is not supported in this browser');
+    }
 
     // Time-based greeting for a more concierge-style branded experience
     const initialBotMessageEl = document.getElementById('initialBotMessage');
@@ -1674,12 +1764,13 @@
       });
     };
 
-    const addMessage = (role, content) => {
+    const addMessage = (role, content, speak = false) => {
       const div = document.createElement('div');
       div.className = `msg ${role === 'assistant' ? 'bot' : 'user'}`;
       div.innerHTML = escapeHtml(content);
       chatMessages.appendChild(div);
       scrollChatToBottom();
+      if (speak && role === 'assistant') speakReply(content);
       return div;
     };
 
@@ -1811,7 +1902,7 @@
           const controlledMessage = (data.error && data.error.message)
             ? data.error.message
             : (data.message || 'Sorry, I could not process your request right now.');
-          addMessage('assistant', controlledMessage);
+          addMessage('assistant', controlledMessage, true);
           chatHistory.push({ role: 'assistant', content: controlledMessage });
           return;
         }
@@ -1819,7 +1910,7 @@
         const reply = (data && (data.answer || data.reply))
           ? (data.answer || data.reply)
           : 'Sorry, I could not generate a response right now.';
-        addMessage('assistant', reply);
+        addMessage('assistant', reply, true);
         chatHistory.push({ role: 'assistant', content: reply });
       } catch (err) {
         debugError('[Chat] Fetch failure', err);
